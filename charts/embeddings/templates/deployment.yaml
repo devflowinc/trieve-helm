@@ -1,0 +1,51 @@
+{{- range $index, $service := .Values.models }}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ $.Release.Name }}-embedding-{{ lower $index }}
+  labels:
+    app.kubernetes.io/name: {{ $.Release.Name }}-embedding-{{ lower $index }}
+    app.kubernetes.io/instance: {{ $.Release.Name }}{{ lower $index }}
+spec:
+  replicas: {{ $service.replicas }}
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: {{ $.Release.Name }}-embedding-{{ lower $index}}
+      app.kubernetes.io/instance: {{ $.Release.Name }}{{ lower $index }}
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: {{ $.Release.Name }}-embedding-{{ lower $index }}
+        app.kubernetes.io/instance: {{ $.Release.Name }}{{ lower $index}}
+    spec:
+      containers:
+        - name: {{ $.Release.Name }}-embedding-{{ lower $index }}
+          readinessProbe:
+            httpGet:
+              path: "/"
+              port: 80
+          {{- if eq $service.machineFamily "g5" }}
+          image: ghcr.io/huggingface/text-embeddings-inference:89-1.2
+          {{- else if eq $service.machineFamily "g4dn" }}
+          image: ghcr.io/huggingface/text-embeddings-inference:turing-1.2
+          {{- else }}
+          image: ghcr.io/huggingface/text-embeddings-inference:turing-1.2
+          {{- end }}
+          args: 
+            - "--model-id" 
+            - {{ $service.modelName | quote }}
+            {{- if $service.isSplade }}
+            - "--pooling"
+            - "splade"
+            {{- end }}
+            {{- if $service.revision }}
+            - --revision
+            - {{ $service.revision | quote }}
+            {{- end }}
+          ports:
+            - containerPort: 80
+          resources:
+            limits:
+              nvidia.com/gpu: 1
+{{- end }}

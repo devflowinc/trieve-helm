@@ -1,0 +1,15 @@
+machineFamily: g4dn # g4dn or g5
+
+models:
+  bgeM3:
+    replicas: 8
+    revision: main
+    modelName: BAAI/bge-m3 # The end of the URL https://huggingface.co/BAAI/bge-m3
+    ingress:
+      enabled: true
+  spladeDoc:
+    replicas: 2
+    modelName: naver/efficient-splade-VI-BT-large-doc # The end of the URL https://huggingface.co/naver/efficient-splade-VI-BT-large-doc
+    isSplade: true
+    ingress:
+      enabled: true
