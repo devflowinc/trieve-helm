@@ -1,6 +1,6 @@
 machineFamily: g4dn # g4dn or g5
 
-accessKeyHash: eyJhdXRocyI6eyJpbmRleC5kb2NrZXIuaW8iOnsidXNlcm5hbWUiOiJ0cmlldmUiLCJwYXNzd29yZCI6ImRja3JfcGF0X1FZdzdjcEJQbnF5Rk1KaS1XWVd3dFRKM013WSIsImVtYWlsIjoiZGV2b3BzQHRyaWV2ZS5haSIsImF1dGgiOiJkSEpwWlhabE9tUmphM0pmY0dGMFgxRlpkemRqY0VKUWJuRjVSazFLYVMxWFdWZDNkRlJLTTAxM1dRPT0ifX19
+accessKey: ""
 
 models:
   bgeM3:
