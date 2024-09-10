@@ -19,18 +19,21 @@ spec:
         app.kubernetes.io/name: {{ $.Release.Name }}-embedding-{{ lower $index }}
         app.kubernetes.io/instance: {{ $.Release.Name }}{{ lower $index}}
     spec:
+      imagePullSecrets:
+        - name: {{ $.Release.Name }}-embeddings-pull-secret
       containers:
         - name: {{ $.Release.Name }}-embedding-{{ lower $index }}
+          imagePullPolicy: Always
           readinessProbe:
             httpGet:
               path: "/"
               port: 80
           {{- if eq $service.machineFamily "g5" }}
-          image: ghcr.io/huggingface/text-embeddings-inference:89-1.2
+          image: trieve/embeddings:g5
           {{- else if eq $service.machineFamily "g4dn" }}
-          image: ghcr.io/huggingface/text-embeddings-inference:turing-1.2
+          image: trieve/embeddings:g4dn
           {{- else }}
-          image: ghcr.io/huggingface/text-embeddings-inference:turing-1.2
+          image: trieve/embeddings:g4dn
           {{- end }}
           args: 
             - "--model-id" 
@@ -42,6 +45,10 @@ spec:
             {{- if $service.revision }}
             - --revision
             - {{ $service.revision | quote }}
+            {{- end }}
+            {{- if $service.hfToken }}
+            - --hf-api-token
+            - {{ $service.hfToken | quote }}
             {{- end }}
           ports:
             - containerPort: 80
