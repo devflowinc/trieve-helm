@@ -1,4 +1,5 @@
 {{- range $index, $service := .Values.models }}
+---
 kind: Service
 apiVersion: v1
 metadata:
@@ -13,5 +14,6 @@ spec:
       protocol: TCP
       name: svc
   selector:
-    app.kubernetes.io/name: {{ $.Release.Name }}-embedding-{{ lower $index  }}-service
+    app.kubernetes.io/name: {{ $.Release.Name }}-embedding-{{ lower $index  }}
+    app.kubernetes.io/instance: {{ $.Release.Name }}{{ lower $index}}
 {{- end }}
