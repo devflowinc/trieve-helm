@@ -1,0 +1,63 @@
+{{- range $index, $service := .Values.models }}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ $.Release.Name }}-generation-{{ lower $index }}
+  namespace: {{ $.Release.Namespace }}
+  labels:
+    app.kubernetes.io/name: {{ $.Release.Name }}-generation-{{ lower $index }}
+    app.kubernetes.io/instance: {{ $.Release.Name }}{{ lower $index }}
+spec:
+  replicas: {{ $service.replicas }}
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: {{ $.Release.Name }}-generation-{{ lower $index}}
+      app.kubernetes.io/instance: {{ $.Release.Name }}{{ lower $index }}
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: {{ $.Release.Name }}-generation-{{ lower $index }}
+        app.kubernetes.io/instance: {{ $.Release.Name }}{{ lower $index}}
+    spec:
+      imagePullSecrets:
+        - name: {{ $.Release.Name }}-gen-pull-secret
+      containers:
+        - name: {{ $.Release.Name }}-generation-{{ lower $index }}
+          imagePullPolicy: Always
+          readinessProbe:
+            httpGet:
+              path: "/"
+              port: 80
+          image: ghcr.io/huggingface/text-generation-inference:2.3.1
+          env:
+            {{- if $service.hfToken }}
+            - name: HF_TOKEN
+              value: {{ $service.hfToken | quote }}
+            {{- end }}
+          args: 
+            - "--model-id" 
+            - {{ $service.modelName | quote }}
+            {{- if $service.maxConcurrentRequests }}
+            - --max-concurrent-requests
+            - {{ $service.maxConcurrentRequests | quote }}
+            {{- end }}
+            {{- if $service.maxInputLenth }}
+            - --max-input-length
+            - {{ $service.maxInputLenth | quote }}
+            {{- end }}
+            {{- if $service.maxTotalTokens }}
+            - --max-total-tokens
+            - {{ $service.maxTotalTokens | quote }}
+            {{- end }}
+            {{- if $service.maxBatchSize }}
+            - --max-batch-size
+            - {{ $service.maxBatchSize | quote }}
+            {{- end }}
+
+          ports:
+            - containerPort: 80
+          resources:
+            limits:
+              nvidia.com/gpu: 1
+{{- end }}

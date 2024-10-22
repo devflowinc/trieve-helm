@@ -1,0 +1,7 @@
+models:
+  # zephyr:
+  #   replicas: 1
+  #   revision: main
+  #   modelName: HuggingFaceH4/zephyr-7b-beta
+  #   serviceMonitor: 
+  #     enabled: true
