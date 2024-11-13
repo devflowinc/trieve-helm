@@ -17,7 +17,6 @@ spec:
         app.kubernetes.io/name: delete-worker
         app.kubernetes.io/instance: {{ .Release.Name }}
     spec:
-      serviceAccountName: {{ .Values.gcloud.serviceAccountName }}
       containers:
       - name: delete-worker
         image: {{ printf "%s%s:%s" (ternary "trieve/" "localhost:5000/" (ne .Values.environment "local")) "delete_worker" .Values.containers.delete_worker.tag }}

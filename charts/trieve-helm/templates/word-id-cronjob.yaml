@@ -12,7 +12,6 @@ spec:
     spec:
       template:
         spec:
-          serviceAccountName: {{ .Values.gcloud.serviceAccountName }}
           restartPolicy: OnFailure
           containers:
           - name: set-ids-job

@@ -17,7 +17,6 @@ spec:
         app.kubernetes.io/name: ingest
         app.kubernetes.io/instance: {{ .Release.Name }}
     spec:
-      serviceAccountName: {{ .Values.gcloud.serviceAccountName }}
       containers:
       - name: ingest
         image: {{ printf "%s:%s" "trieve/ingest" .Values.containers.ingest.tag }}

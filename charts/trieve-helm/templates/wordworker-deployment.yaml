@@ -17,7 +17,6 @@ spec:
         app.kubernetes.io/name: word-worker
         app.kubernetes.io/instance: {{ .Release.Name }}
     spec:
-      serviceAccountName: {{ .Values.gcloud.serviceAccountName }}
       containers:
       - name: word-worker
         image: {{ printf "%s:%s" "trieve/word-worker" .Values.containers.word_worker.tag }}

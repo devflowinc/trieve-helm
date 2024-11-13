@@ -17,7 +17,6 @@ spec:
         app.kubernetes.io/name: sync-qdrant
         app.kubernetes.io/instance: {{ .Release.Name }}
     spec:
-      serviceAccountName: {{ .Values.gcloud.serviceAccountName }}
       containers:
       - name: sync-qdrant
         image: {{ printf "%s:%s" "trieve/sync_qdrant" .Values.containers.sync_qdrant.tag }}

@@ -31,7 +31,6 @@ spec:
       nodeSelector:
         cloud.google.com/gke-spot: "true"
       terminationGracePeriodSeconds: 10
-      serviceAccountName: {{ .Values.gcloud.serviceAccountName }}
       containers:
       - name: server
         image: {{ printf "%s:%s" "trieve/server" .Values.containers.server.tag }}

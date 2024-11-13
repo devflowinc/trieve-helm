@@ -17,7 +17,6 @@ spec:
         app.kubernetes.io/name: group-worker
         app.kubernetes.io/instance: {{ .Release.Name }}
     spec:
-      serviceAccountName: {{ .Values.gcloud.serviceAccountName }}
       containers:
       - name: group-worker
         image: {{ printf "%s%s:%s" (ternary "trieve/" "localhost:5000/" (ne .Values.environment "local")) "group_worker" .Values.containers.group_worker.tag }}
