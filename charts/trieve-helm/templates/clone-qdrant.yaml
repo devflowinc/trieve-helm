@@ -1,0 +1,47 @@
+{{- range $index, $service := $.Values.clone }}
+{{- $origin := (get $service "origin") }}
+{{- $dest := (get $service "dest") }}
+{{- $collection := (get $service "collection") }}
+{{- $clone_name := (get $service "clone_name") }}
+{{- $timeout_ms := (get $service "timeout_ms") }}
+{{- $qdrant_timeout_sec := (get $service "qdrant_timeout_sec") }}
+{{- $offset_id := (get $service "offset_id") }}
+{{- if ne $index 0 }}
+---
+{{- end }}
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: clone-qdrant-{{ $clone_name }}
+  labels:
+    app.kubernetes.io/name: clone-qdrant-{{ $clone_name }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+spec:
+  suspend: true
+  schedule: "0 0 * * *"
+  concurrencyPolicy: Replace
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          restartPolicy: Never
+          containers:
+          - name: clone-qdrant-{{ $clone_name }}
+            image: {{ printf "%s%s:%s" (ternary "trieve/" "localhost:5000/" (ne $.Values.environment "local")) "clone_qdrant" $.Values.containers.clone_qdrant.tag }}
+            envFrom:
+              - configMapRef:
+                  name: trieve-server-config
+            env:
+              - name: ORIGIN_QDRANT_URL
+                value: {{ $origin }}
+              - name: NEW_QDRANT_URL
+                value: {{ $dest }}
+              - name: COLLECTION_TO_CLONE
+                value: {{ $collection }}
+              - name: TIMEOUT_MS
+                value: {{ $timeout_ms | quote }}
+              - name: QDRANT_TIMEOUT_SEC
+                value: {{ $qdrant_timeout_sec | quote  }}
+              - name: OFFSET_ID
+                value: {{ $offset_id | quote }}
+{{- end }}

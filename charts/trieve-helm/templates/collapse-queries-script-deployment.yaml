@@ -1,0 +1,20 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: clickhouse-collapse
+spec:
+  schedule: "*/30 * * * *"
+  concurrencyPolicy: Forbid
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+            - name: clustering
+              image: {{ printf "%s:%s" "trieve/clickhouse-collapse-query-script" .Values.containers.clickhouse_collapse.tag }}
+              imagePullPolicy: IfNotPresent
+              env:
+                - name: CLICKHOUSE_DSN
+                  value: clickhouse://default:test_password@chi-trieve-clickhouse-cluster1-0-0.clickhouse.svc.cluster.local/default
+          restartPolicy: Never
+

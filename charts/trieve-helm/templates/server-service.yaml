@@ -1,0 +1,37 @@
+{{- $name := "server-service" }}
+{{- $selector := "server" }}
+
+{{- if eq $.Values.environment "gcloud" }}
+---
+apiVersion: cloud.google.com/v1
+kind: BackendConfig
+metadata:
+  name: server-backend-config
+spec:
+  healthCheck:
+    checkIntervalSec: 15
+    port: 8090
+    type: HTTP
+    requestPath: /api/health
+---
+{{- end }}
+kind: Service
+apiVersion: v1
+metadata:
+  name: {{ $name }}
+  annotations:
+    cloud.google.com/backend-config: '{"ports": {"80":"server-backend-config"}}'
+  labels:
+    app.kubernetes.io/instance: trieve
+    app.kubernetes.io/name: {{ $name }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+spec:
+  type: ClusterIP
+  ports:
+    - port: 8090
+      targetPort: 8090
+      protocol: TCP
+      name: server
+  selector:
+    app.kubernetes.io/name: {{ $selector }}
+    app.kubernetes.io/instance: trieve

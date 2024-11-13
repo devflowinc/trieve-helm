@@ -1,0 +1,21 @@
+{{- $name := "dashboard-service" }}
+{{- $selector := "dashboard" }}
+kind: Service
+apiVersion: v1
+metadata:
+  name: {{ $name }}
+  labels:
+    app.kubernetes.io/name: {{ $name }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+  annotations:
+    beta.cloud.google.com/backend-config: '{"ports": {"80":"frontend-backend-config"}}'
+spec:
+  type: ClusterIP
+  ports:
+    - port: 80
+      targetPort: 80
+      protocol: TCP
+      name: dashboard
+  selector:
+    app.kubernetes.io/name: {{ $selector }}
+    app.kubernetes.io/instance: trieve
