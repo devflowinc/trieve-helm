@@ -23,6 +23,9 @@ spec:
   jobTemplate:
     spec:
       template:
+        metadata:
+          annotations:
+            checksum/config: {{ include (print $.Template.BasePath "/backend-configmap.yaml") . | sha256sum }}
         spec:
           restartPolicy: Never
           containers:

@@ -15,6 +15,5 @@ spec:
               imagePullPolicy: IfNotPresent
               env:
                 - name: CLICKHOUSE_DSN
-                  value: clickhouse://default:test_password@chi-trieve-clickhouse-cluster1-0-0.clickhouse.svc.cluster.local/default
+                  value: {{ .Values.config.analytics.clickhouseDSN }}
           restartPolicy: Never
-
