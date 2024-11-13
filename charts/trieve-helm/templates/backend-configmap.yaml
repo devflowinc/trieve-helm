@@ -37,7 +37,6 @@ data:
   OIDC_CLIENT_ID: {{ .Values.config.oidc.clientId }}
   OIDC_AUTH_REDIRECT_URL: {{ .Values.config.oidc.authRedirectUrl }}
   OIDC_ISSUER_URL: {{ .Values.config.oidc.issuerUrl }}
-  GPU_SERVER_ORIGIN: {{ .Values.config.trieve.gpuServerOrigin }}
   SPARSE_SERVER_QUERY_ORIGIN: {{ .Values.config.trieve.sparseServerQueryOrigin }}
   SPARSE_SERVER_DOC_ORIGIN: {{ .Values.config.trieve.sparseServerDocOrigin }}
   EMBEDDING_SERVER_ORIGIN: {{ .Values.config.trieve.embeddingServerOrigin }}
