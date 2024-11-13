@@ -3,7 +3,6 @@ kind: ConfigMap
 metadata:
   name: trieve-server-config
 data:
-  SENTRY_URL: "https://81fadb6c2761da92de2a9a6f919fe66d@sentry.withtrieve.com/4"
   ADMIN_API_KEY: {{ .Values.config.trieve.adminApiKey }}
   BASE_SERVER_URL: {{ .Values.config.trieve.baseServerUrl }}
   REDIS_URL: {{ .Values.config.redis.uri }}
