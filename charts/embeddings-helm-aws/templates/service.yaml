@@ -1,0 +1,19 @@
+{{- range $index, $service := .Values.models }}
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: {{ $.Release.Name }}-embedding-{{ lower $index }}-service
+  labels:
+    app.kubernetes.io/name: {{ $.Release.Name }}-embedding-{{ lower $index }}-service
+spec:
+  type: ClusterIP
+  ports:
+    - port: 80
+      targetPort: 80
+      protocol: TCP
+      name: svc
+  selector:
+    app.kubernetes.io/name: {{ $.Release.Name }}-embedding-{{ lower $index  }}
+    app.kubernetes.io/instance: {{ $.Release.Name }}{{ lower $index}}
+{{- end }}

@@ -1,0 +1,7 @@
+apiVersion: v2
+name: trieve-embeddings
+description: Helm chart for blazingly fast vector embeddings on AWS marketplace
+icon: https://cdn.trieve.ai/favicon.ico
+type: application
+version: 0.1.1
+appVersion: "1.0.0"
