@@ -38,9 +38,6 @@ domains:
   chat: chat.withtrieve.com
 postgres:
   dbURI: ""
-gcloud:
-  serviceAccountName: ""
-  cloudSqlProxyName: ""
 config:
   vite:
     apiHost: https://api.withtrieve.com/api
