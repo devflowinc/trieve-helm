@@ -27,7 +27,6 @@ spec:
       terminationGracePeriodSeconds: 30
       nodeSelector:
         cloud.google.com/gke-accelerator: nvidia-l4
-        cloud.google.com/gke-spot: "true"
       containers:
         - name: embedding-{{ $name }}
           readinessProbe:
