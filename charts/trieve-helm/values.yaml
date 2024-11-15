@@ -32,10 +32,18 @@ containers:
   clickhouse_collapse:
     tag: v0.12.0
 domains:
-  dashboard: dashboard.withtrieve.com
-  server: api.withtrieve.com
-  search: search.withtrieve.com
-  chat: chat.withtrieve.com
+  dashboard:
+    host: dashboard.withtrieve.com
+    class: gce
+  server:
+    host: api.withtrieve.com
+    class: gce
+  search:
+    host: search.withtrieve.com
+    class: gce
+  chat:
+    host: chat.withtrieve.com
+    class: gce
 postgres:
   dbURI: ""
 config:

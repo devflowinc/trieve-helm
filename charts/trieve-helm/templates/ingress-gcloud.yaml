@@ -1,5 +1,5 @@
-{{- if (eq .Values.environment "gcloud") }}
 ---
+{{- with $.Values.domains.dashboard }}
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
@@ -7,10 +7,23 @@ metadata:
   labels:
     app: trieve
   annotations:
-    kubernetes.io/ingress.class: gce
+    kubernetes.io/ingress.class: {{ .class | default "gce" }}
+    {{- with .annotations }}
+      {{- toYaml | nindent 4 }}
+    {{- end }}
 spec:
+  {{- if .tls }}
+  tls:
+    {{- range .tls}}
+    - hosts:
+        {{- range .hosts }}
+        - {{ . | quote }}
+        {{- end }}
+      secretName: {{ .secretName | quote }}
+    {{- end }}
+  {{- end }}
   rules:
-    - host: {{ $.Values.domains.dashboard }}
+    - host: {{ .host }}
       http:
         paths:
           - path: /
@@ -20,6 +33,7 @@ spec:
                 name: dashboard-service
                 port:
                   number: 80
+{{- end }}
 ---
 apiVersion: networking.k8s.io/v1
 kind: Ingress
@@ -28,10 +42,23 @@ metadata:
   labels:
     app: trieve
   annotations:
-    kubernetes.io/ingress.class: gce
+    kubernetes.io/ingress.class: {{ .class | default "gce" }}
+    {{- with .annotations }}
+      {{- toYaml | nindent 4 }}
+    {{- end }}
 spec:
+  {{- if .tls }}
+  tls:
+    {{- range .tls}}
+    - hosts:
+        {{- range .hosts }}
+        - {{ . | quote }}
+        {{- end }}
+      secretName: {{ .secretName | quote }}
+    {{- end }}
+  {{- end }}
   rules:
-    - host: {{ $.Values.domains.chat }}
+    - host: {{ $.Values.domains.chat.host }}
       http:
         paths:
           - path: /
@@ -42,6 +69,7 @@ spec:
                 port:
                   number: 3000
 ---
+{{- with $.Values.domains.server }}
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
@@ -49,10 +77,23 @@ metadata:
   labels:
     app: trieve
   annotations:
-    kubernetes.io/ingress.class: gce
+    kubernetes.io/ingress.class: {{ .class | default "gce" }}
+    {{- with .annotations }}
+      {{- toYaml | nindent 4 }}
+    {{- end }}
 spec:
+  {{- if .tls }}
+  tls:
+    {{- range .tls}}
+    - hosts:
+        {{- range .hosts }}
+        - {{ . | quote }}
+        {{- end }}
+      secretName: {{ .secretName | quote }}
+    {{- end }}
+  {{- end }}
   rules:
-    - host: {{ $.Values.domains.server }}
+    - host: {{ $.Values.domains.server.host }}
       http:
         paths:
           - path: /
@@ -62,7 +103,9 @@ spec:
                 name: server-service
                 port:
                   number: 8090
+{{- end }}
 ---
+{{- with $.Values.domains.search }}
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
@@ -70,10 +113,23 @@ metadata:
   labels:
     app: trieve
   annotations:
-    kubernetes.io/ingress.class: gce
+    kubernetes.io/ingress.class: {{ .class | default "gce" }}
+    {{- with .annotations }}
+      {{- toYaml | nindent 4 }}
+    {{- end }}
 spec:
+  {{- if .tls }}
+  tls:
+    {{- range .tls}}
+    - hosts:
+        {{- range .hosts }}
+        - {{ . | quote }}
+        {{- end }}
+      secretName: {{ .secretName | quote }}
+    {{- end }}
+  {{- end }}
   rules:
-    - host: {{ $.Values.domains.search }}
+    - host: {{ $.Values.domains.search.host }}
       http:
         paths:
           - path: /
