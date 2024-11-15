@@ -33,8 +33,15 @@ containers:
     tag: v0.12.0
 domains:
   dashboard:
-    host: dashboard.withtrieve.com
-    class: gce
+    host: streak-dashboard.withtrieve.com
+    class: nginx
+    annotations:
+      cert-manager.io/cluster-issuer: "letsencrypt"
+      nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    tls:
+      - hosts:
+          - streak-dashboard.withtrieve.com
+        secretName: streak-dashboard-withtrieve-com
   server:
     host: api.withtrieve.com
     class: gce

@@ -20,7 +20,9 @@ apiVersion: v1
 metadata:
   name: {{ $name }}
   annotations:
+  {{- if eq $.Values.environment "gcloud" }}
     cloud.google.com/backend-config: '{"ports": {"80":"server-backend-config"}}'
+  {{- end }}
   labels:
     app.kubernetes.io/instance: trieve
     app.kubernetes.io/name: {{ $name }}
