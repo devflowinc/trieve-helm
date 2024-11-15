@@ -17,7 +17,7 @@ metadata:
     app.kubernetes.io/name: server
     app.kubernetes.io/instance: {{ .Release.Name }}
 spec:
-  replicas: 3
+  replicas: {{ .Values.containers.search.replicas | default 3 }}
   selector:
     matchLabels:
       app.kubernetes.io/name: server

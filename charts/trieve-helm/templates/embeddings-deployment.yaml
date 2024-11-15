@@ -3,6 +3,7 @@
 {{- $model := (get $service "model") }}
 {{- $name := (get $service "name") }}
 {{- $args := (get $service "args") }}
+{{- $replicas := (get $service "replicas") }}
 {{- if ne $index 0 }}
 ---
 {{- end }}
@@ -14,6 +15,7 @@ metadata:
     app.kubernetes.io/name: embedding-{{ $name }}
     app.kubernetes.io/instance: {{ $.Release.Name }}
 spec:
+  replicas: {{ $replicas | default 1 }}
   selector:
     matchLabels:
       app.kubernetes.io/name: embedding-{{ $name }}

@@ -6,7 +6,7 @@ metadata:
     app.kubernetes.io/name: group-worker
     app.kubernetes.io/instance: {{ .Release.Name }}
 spec:
-  replicas: 1
+  replicas: {{ .Values.containers.group_worker.replicas | default 1 }}
   selector:
     matchLabels:
       app.kubernetes.io/name: group-worker
@@ -21,7 +21,7 @@ spec:
     spec:
       containers:
       - name: group-worker
-        image: {{ printf "%s%s:%s" (ternary "trieve/" "localhost:5000/" (ne .Values.environment "local")) "group_worker" .Values.containers.group_worker.tag }}
+        image: {{ printf "%s:%s" "trieve/group_worker" .Values.containers.group_worker.tag }}
         envFrom:
           - configMapRef:
               name: trieve-server-config

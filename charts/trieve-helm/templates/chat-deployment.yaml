@@ -6,7 +6,7 @@ metadata:
     app.kubernetes.io/name: chat
     app.kubernetes.io/instance: {{ .Release.Name }}
 spec:
-  replicas: 1
+  replicas: {{ .Values.containers.chat.replicas | default 1 }}
   selector:
     matchLabels:
       app.kubernetes.io/name: chat
