@@ -36,6 +36,8 @@ spec:
       containers:
       - name: server
         image: {{ printf "%s:%s" "trieve/server" .Values.containers.server.tag }}
+        resources:
+          {{- toYaml .Values.containers.server.resources | nindent 12 }}
         livenessProbe:
           httpGet:
             path: "/api/health"

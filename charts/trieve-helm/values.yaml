@@ -3,30 +3,43 @@ useGpu: true
 containers:
   server:
     tag: sha-77a8d34
+    resources: {}
   ingest:
     tag: sha-77a8d34
+    resources: {}
   file_worker:
     tag: sha-77a8d34
+    resources: {}
   delete_worker:
     tag: sha-77a8d34
+    resources: {}
   group_worker:
     tag: sha-77a8d34
+    resources: {}
   sync_qdrant:
     tag: sha-77a8d34
+    resources: {}
   bktree_worker:
     tag: sha-77a8d34
+    resources: {}
   word_worker:
     tag: sha-77a8d34
+    resources: {}
   word_id_cronjob:
     tag: sha-77a8d34
+    resources: {}
   clone_qdrant:
     tag: sha-77a8d34
+    resources: {}
   search:
     tag: sha-08efe54
+    resources: {}
   chat:
     tag: sha-08efe54
+    resources: {}
   dashboard:
     tag: sha-08efe54
+    resources: {}
   clustering_cron:
     tag: v0.12.0
   clickhouse_collapse:

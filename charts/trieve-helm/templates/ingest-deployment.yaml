@@ -21,6 +21,8 @@ spec:
     spec:
       containers:
       - name: ingest
+        resources:
+          {{- toYaml .Values.containers.server.resources | nindent 12 }}
         image: {{ printf "%s:%s" "trieve/ingest" .Values.containers.ingest.tag }}
         envFrom:
           - configMapRef:
