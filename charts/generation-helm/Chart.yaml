@@ -3,6 +3,6 @@ name: generation-helm
 description: Helm chart for blazingly fast text genration models
 icon: https://cdn.trieve.ai/favicon.ico
 type: application
-version: 0.1.0
+version: 0.1.1-beta
 appVersion: "1.16.0"
 

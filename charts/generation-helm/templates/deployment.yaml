@@ -29,7 +29,7 @@ spec:
             httpGet:
               path: "/"
               port: 80
-          image: trieve/text-generation-inference
+          image: ghcr.io/huggingface/text-generation-inference:2.4.1
           env:
             {{- if $service.hfToken }}
             - name: HF_TOKEN
