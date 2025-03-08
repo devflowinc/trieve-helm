@@ -1,0 +1,71 @@
+apiVersion: v1
+entries:
+  embeddings-helm:
+  - apiVersion: v2
+    appVersion: 1.16.0
+    created: "2025-03-08T00:00:32.791846221Z"
+    description: Helm chart for blazingly fast vector embeddings
+    digest: 01a467cad4069d59926e3efa62652a9528aae777df6b74f8cf76b6912bb219c2
+    icon: https://cdn.trieve.ai/favicon.ico
+    name: embeddings-helm
+    type: application
+    urls:
+    - https://github.com/devflowinc/trieve-helm/releases/download/embeddings-helm-0.1.0/embeddings-helm-0.1.0.tgz
+    version: 0.1.0
+  generation-helm:
+  - apiVersion: v2
+    appVersion: 1.16.0
+    created: "2025-03-08T00:00:32.873582301Z"
+    description: Helm chart for blazingly fast text genration models
+    digest: 010c848691ae28f010f9f6bd3b90bdf0585da57e5dd1510674893259d2a40da2
+    icon: https://cdn.trieve.ai/favicon.ico
+    name: generation-helm
+    type: application
+    urls:
+    - https://github.com/devflowinc/trieve-helm/releases/download/generation-helm-0.1.1-beta/generation-helm-0.1.1-beta.tgz
+    version: 0.1.1-beta
+  trieve-embeddings:
+  - apiVersion: v2
+    appVersion: 1.0.0
+    created: "2025-03-08T00:00:32.98416068Z"
+    description: Helm chart for blazingly fast vector embeddings on AWS marketplace
+    digest: efc55ca922debbf2db836550395bb792995f8331acb47d84e981040eb408271b
+    icon: https://cdn.trieve.ai/favicon.ico
+    name: trieve-embeddings
+    type: application
+    urls:
+    - https://github.com/devflowinc/trieve-helm/releases/download/trieve-embeddings-0.1.1/trieve-embeddings-0.1.1.tgz
+    version: 0.1.1
+  trieve-helm:
+  - apiVersion: v2
+    appVersion: 0.12.0
+    created: "2025-03-08T00:00:33.160852068Z"
+    dependencies:
+    - condition: qdrant.enabled
+      name: qdrant
+      repository: https://qdrant.github.io/qdrant-helm
+      version: 1.13.4
+    - condition: redis.enabled
+      name: redis
+      repository: https://charts.bitnami.com/bitnami
+      version: 20.10.0
+    - condition: keycloak.enabled
+      name: keycloak
+      repository: ""
+      version: 0.0.0
+    - condition: clickhouse.enabled
+      name: clickhouse
+      repository: ""
+      version: 0.0.0
+    - condition: postgres.enabled
+      name: postgres
+      repository: ""
+      version: 0.0.0
+    description: Helm chart expressing Trieve deployment without any dependencies
+    digest: 4898f476a2bf8697a066152118c17029feff5d774a2e530643bba82c917c4b43
+    name: trieve-helm
+    type: application
+    urls:
+    - https://github.com/devflowinc/trieve-helm/releases/download/trieve-helm-0.2.2/trieve-helm-0.2.2.tgz
+    version: 0.2.2
+generated: "2025-03-08T00:00:33.160862317Z"
