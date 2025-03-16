@@ -1,0 +1,139 @@
+redis:
+  enabled: true
+  # connection: redis://:password@localhost:6379/0
+
+  metrics:
+    enabled: false
+    serviceMonitor:
+      enabled: false
+  auth:
+    password: "password"
+  master:
+    disableCommands: []
+    persistence:
+      enabled: false
+    pdb:
+      create: false
+    resources:
+      limits:
+        memory: 5Gi
+  replica:
+    replicaCount: 0
+
+clickhouse:
+  enabled: true
+  installCrds: true
+
+  connection:
+    # TODO modify password
+    clickhouseDB: default
+    clickhouseUser: default
+    clickhousePassword: cywtKFfCdRYq7H
+    # May change as release name changes
+    clickhouseUrl: http://clickhouse-pdf2md-trieve:8123
+
+  clickhouseSpec:
+    configuration:
+      users:
+        default/password: cywtKFfCdRYq7H
+        # to allow access outside from kubernetes
+        default/networks/ip:
+          - 0.0.0.0/0
+      clusters:
+        - name: "default"
+          layout:
+            shardsCount: 1
+            replicasCount: 1
+          templates:
+            podTemplate: clickhouse-stable
+            volumeClaimTemplate: storage-vc-template
+    templates:
+      podTemplates:
+        - name: clickhouse-stable
+          spec:
+            containers:
+            - name: clickhouse
+              image: clickhouse/clickhouse-server:24.12.6
+      volumeClaimTemplates:
+        - name: storage-vc-template
+          spec:
+            accessModes:
+              - ReadWriteOnce
+            resources:
+              requests:
+                storage: 20Gi
+
+s3:
+  endpoint: https://bucket-s3bucket.s3.amazonaws.com
+  accessKey: NXVN****************
+  secretKey: czc3L***********************************
+  bucket: pdf2md-s3bucket
+  region: us-east-2
+
+config:
+
+  llm:
+    # We recommend openrouter because they accept
+    # a larger payload size. 
+    baseUrl: https://openrouter.ai/api/v1
+    apiKey: sk-**********************************************************************
+    model: gpt-*******
+
+  chunkr:
+    baseUrl: https://api.chunkr.ai
+    apiKey: lu_*********************************************
+
+  pdf2md:
+    # PDF2MD has a single ADMIN API apiKey
+    # Change as needed
+    apiKey: CQS2ZQUGG43CNqn1CVfreire
+
+containers:
+  - name: pdf2md-server
+    
+    image:
+      repository: pdf2md-server
+      # registry: trieve
+      # If not set, default will be Chart.appVersion
+      # tag: sha-5243efe
+      pullPolicy: Always
+
+    # imagePullSecrets:
+    #   - name: trieve-registry
+    #
+    ports:
+      - name: http
+        containerPort: 8081
+
+    resources:
+      requests:
+        memory: "300Mi"
+      #   cpu: "100m"
+      # limits:
+      #   memory: "256Mi"
+      #   cpu: "200m"
+
+  - name: chunk-worker
+    image:
+      repository: chunk-worker
+      # registry: trieve
+      # If not set, default will be Chart.appVersion
+      # tag: sha-5243efe
+      pullPolicy: Always
+
+    # imagePullSecrets:
+    #   - name: trieve-registry
+    #
+    
+  - name: supervisor-worker
+    image:
+      repository: supervisor-worker
+      # registry: trieve
+      # If not set, default will be Chart.appVersion
+      # tag: sha-5243efe
+      pullPolicy: Always
+
+    # imagePullSecrets:
+      # o
+    #   - name: trieve-registry
+    #
