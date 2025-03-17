@@ -130,6 +130,31 @@ qdrant:
     cpu: 1
     memory: 10Gi
 
+pdf2md:
+  enabled: true
+
+  clickhouse:
+    enabled: false
+
+  redis:
+    enabled: false
+
+  config:
+
+    llm:
+      # We recommend openrouter because they accept
+      # a larger payload size. 
+      baseUrl: https://openrouter.ai/api/v1
+      apiKey: sk-**********************************************************************
+      model: gpt-*******
+
+  s3:
+    endpoint: https://bucket-s3bucket.s3.amazonaws.com
+    accessKey: NXVN****************
+    secretKey: czc3L***********************************
+    bucket: pdf2md-s3bucket
+    region: us-east-2
+
 redis:
   enabled: true
   metrics:
