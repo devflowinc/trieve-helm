@@ -24,7 +24,58 @@ entries:
     urls:
     - https://github.com/devflowinc/trieve-helm/releases/download/generation-helm-0.1.1-beta/generation-helm-0.1.1-beta.tgz
     version: 0.1.1-beta
+  pdf2md:
+  - apiVersion: v2
+    appVersion: sha-b6286ae
+    created: "2025-03-17T08:52:34.604661451Z"
+    dependencies:
+    - condition: redis.enabled
+      name: redis
+      repository: https://charts.bitnami.com/bitnami
+      version: 20.10.0
+    - condition: clickhouse.enabled
+      name: clickhouse
+      repository: ""
+      version: 0.0.0
+    description: Helm chart for pdf2md pdf2md.trieve.ai
+    digest: 20fe876627406bea7ff8ada0bd6b79ab4410620b6e5933b5725f1598b05a5475
+    name: pdf2md
+    type: application
+    urls:
+    - https://github.com/devflowinc/trieve-helm/releases/download/pdf2md-0.0.1/pdf2md-0.0.1.tgz
+    version: 0.0.1
   trieve:
+  - apiVersion: v2
+    appVersion: 0.12.0
+    created: "2025-03-17T08:52:34.763406872Z"
+    dependencies:
+    - condition: qdrant.enabled
+      name: qdrant
+      repository: https://qdrant.github.io/qdrant-helm
+      version: 1.13.4
+    - condition: redis.enabled
+      name: redis
+      repository: https://charts.bitnami.com/bitnami
+      version: 20.10.0
+    - condition: keycloak.enabled
+      name: keycloak
+      repository: ""
+      version: 0.0.0
+    - condition: clickhouse.enabled
+      name: clickhouse
+      repository: ""
+      version: 0.0.0
+    - condition: postgres.enabled
+      name: postgres
+      repository: ""
+      version: 0.0.0
+    description: Helm chart expressing Trieve deployment without any dependencies
+    digest: 79ba1e7a43d8dc895a626f07fac63d878091c5d28db97d87c547335ab5de684b
+    name: trieve
+    type: application
+    urls:
+    - https://github.com/devflowinc/trieve-helm/releases/download/trieve-0.2.4/trieve-0.2.4.tgz
+    version: 0.2.4
   - apiVersion: v2
     appVersion: 0.12.0
     created: "2025-03-08T03:24:52.951402689Z"
@@ -131,4 +182,4 @@ entries:
     urls:
     - https://github.com/devflowinc/trieve-helm/releases/download/trieve-helm-0.2.2/trieve-helm-0.2.2.tgz
     version: 0.2.2
-generated: "2025-03-08T03:24:52.951413269Z"
+generated: "2025-03-17T08:52:34.763428171Z"
