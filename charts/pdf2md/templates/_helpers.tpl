@@ -9,6 +9,6 @@
 redis://:{{ $redisPassword }}@{{ $svcName }}:6379
 {{- end -}}
 {{- else -}}
-{{ .Values.redis.connection }}
+{{ $.Values.redis.connection }}
 {{- end -}}
 {{- end -}}
