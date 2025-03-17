@@ -23,6 +23,6 @@ dependencies:
     version: 0.0.0
     condition: postgres.enabled
   # - name: pdf2md
-  #   version: 0.0.2
+  #   version: 0.0.3
   #   repository: https://devflowinc.github.io/trieve-helm
   #   condition: pdf2md.enabled
