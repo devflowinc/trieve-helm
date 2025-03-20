@@ -22,10 +22,18 @@ spec:
         app.kubernetes.io/name: {{ $name }}
         app.kubernetes.io/instance: {{ $.Release.Name }}
     spec:
+      {{- if $service.nodeSelector }}
+      nodeSelector:
+        {{- toYaml $service.nodeSelector | nindent 8 }}
+      {{- end }}
       terminationGracePeriodSeconds: 30
       {{- if $.Values.global.imagePullSecrets }}
       imagePullSecrets:
       {{- toYaml $.Values.global.imagePullSecrets | nindent 8 }}
+      {{- end }}
+      {{- if $service.affinity }}
+      affinity:
+        {{- toYaml $service.affinity | nindent 8 }}
       {{- end }}
       containers:
         - name: {{ $name }}
