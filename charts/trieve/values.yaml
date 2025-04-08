@@ -274,7 +274,7 @@ containers:
     repository: clickhouse-collapse-query-script
 domains:
   dashboard:
-    disabled: true
+    disabled: false
     host: dashboard.yourdomain.com
     # TODO modify as needed for your ingress
     class: nginx
@@ -286,7 +286,7 @@ domains:
     #       - dashboard.yourdomain.com
     #     secretName: dashboard-ansear-ai
   server:
-    disabled: true
+    disabled: false
     host: api.yourdomain.com
     class: nginx
     # annotations:
@@ -297,7 +297,7 @@ domains:
     #       - dashboard.yourdomain.com
     #     secretName: dashboard-ansear-ai
   search:
-    disabled: true
+    disabled: false
     host: search.yourdomain.com
     class: nginx
     # annotations:
@@ -308,7 +308,7 @@ domains:
     #       - dashboard.yourdomain.com
     #     secretName: dashboard-ansear-ai
   chat:
-    disabled: true
+    disabled: false
     host: chat.yourdomain.com
     class: nginx
     # annotations:
