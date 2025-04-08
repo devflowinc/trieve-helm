@@ -1,6 +1,6 @@
 {{- include "trieve.worker.deployment" (dict 
   "name" "file-worker"
-  "replicas" ($.Values.containers.file_worker.replicas | default 1)
+  "replicas" ($.Values.containers.file_worker.replicas | default 0)
   "image" (dict 
     "repository" $.Values.containers.file_worker.repository
     "tag" $.Values.containers.file_worker.tag

@@ -1,6 +1,6 @@
 {{- include "trieve.worker.deployment" (dict 
   "name" "bktree-worker"
-  "replicas" ($.Values.containers.bktree_worker.replicas | default 1)
+  "replicas" ($.Values.containers.bktree_worker.replicas | default 0)
   "image" (dict 
     "repository" $.Values.containers.bktree_worker.repository
     "tag" $.Values.containers.bktree_worker.tag

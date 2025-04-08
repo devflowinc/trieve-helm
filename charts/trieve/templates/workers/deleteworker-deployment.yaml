@@ -8,7 +8,7 @@ metadata:
   annotations:
     checksum/config: {{ include (print $.Template.BasePath "/settings/backend-configmap.yaml") . | sha256sum }}
 spec:
-  replicas: {{ .Values.containers.delete_worker.replicas | default 1 }}
+  replicas: {{ .Values.containers.delete_worker.replicas | default 0 }}
   selector:
     matchLabels:
       app.kubernetes.io/name: delete-worker

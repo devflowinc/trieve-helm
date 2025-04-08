@@ -159,9 +159,11 @@ qdrant:
   podDisruptionBudget:
     enabled: false
     maxUnavailable: 1
+  persistence:
+    size: "10Gi"
   requests:
     cpu: 1
-    memory: 10Gi
+    memory: 5Gi
 
 redis:
   enabled: true
@@ -249,11 +251,6 @@ containers:
   csv_jsonl_worker:
     tag: sha-2b6d5eb
     repository: csv-jsonl-worker
-    replicas: 1
-    resources: {}
-  pagefind_worker:
-    tag: sha-2b6d5eb
-    repository: pagefind-worker
     replicas: 1
     resources: {}
   clone_qdrant:
@@ -362,7 +359,8 @@ config:
     rerankerServerOrigin: http://embedding-reranker.default.svc.cluster.local
     salt: tbbqfnygvfirellhzzl
     secretKey: lkjadsf2349asdlfkj2334209ualkfsdlfkj1023u19312l3kj12l3kjsaf0d9u90823l1kj3209u34h
-    adminApiKey: "ad91lkjad190l"
+    # This adminApiKey can be used 
+    adminApiKey: "ad91lkjad190adfal"
     anthropicAPIKey: ""
     subtraceToken: ""
   oidc:
@@ -370,16 +368,13 @@ config:
     # - dashboard.yourdomain.com/*
     # - chat.yourdomain.com/*
     # - search.yourdomain.com/*
-    # TODO replace with Okteta client secret
     clientSecret: "YllmLDTy67MbsUBrUAWvQ7z9aMq0QcKx"
-    # TODO replace with Okteta client id
     clientId: "trieve"
-    # TODO Replace with Okteta issuer url
     issuerUrl: "http://trieve-keycloak-service:8080/realms/trieve"
-    # TODO Replace with Okteta redirect url
     authRedirectUrl: "http://trieve-keycloak-service:8080/realms/trieve/protocol/openid-connect/auth"
   smtp:
-    # TODO fill with email creds, only impacts email invites to a new dataset
+    # TODO fill with email creds, only impacts email invites to a new dataset, not password reset.
+    # Will not cause erros to self hosters if not set
     relay: ""
     username: ""
     password: ""
@@ -401,15 +396,18 @@ config:
     secret: ""
     webhookSecret: ""
 embeddings:
-  ## TODO need T4 GPU's for embedding servers to be fast
-  ## Can swap useGpu = false for faster testing
+  ## For nodeSelector / affinity to use see
+  ## https://github.com/huggingface/text-embeddings-inference?tab=readme-ov-file#docker-images
+  ## These are the default values that expect `g2-standard-4` nodes to run with
   - name: jina
     revision: main
     model: jinaai/jina-embeddings-v2-base-en
     tag: "89-1.2"
     registry: ghcr.io/huggingface
     repository: text-embeddings-inference
-    useGpu: false
+    useGpu: true
+    # Example of adding nodeSelector and affinity to the pod 
+    # can be used for any other embedding listed model below
     # nodeSelector:
     #   kubernetes.io/os: linux
     # affinity:
@@ -424,33 +422,33 @@ embeddings:
     args: []
   - name: splade-doc
     model: naver/efficient-splade-VI-BT-large-doc
-    tag: "89-1.2"
+    tag: "89-1.4"
     registry: ghcr.io/huggingface
     repository: text-embeddings-inference
     revision: main
-    useGpu: false
+    useGpu: true
     args: ["--pooling", "splade"]
   - name: splade-query
     model: naver/efficient-splade-VI-BT-large-query
-    tag: "89-1.2"
+    tag: "89-1.4"
     registry: ghcr.io/huggingface
     repository: text-embeddings-inference
     revision: main
-    useGpu: false
+    useGpu: true
     args: ["--pooling", "splade"]
   - name: m3
     model: BAAI/bge-m3
-    tag: "89-1.2"
+    tag: "89-1.4"
     registry: ghcr.io/huggingface
     repository: text-embeddings-inference
     revision: main
-    useGpu: false
+    useGpu: true
     args: []
   - name: reranker
     model: BAAI/bge-reranker-large
-    tag: "89-1.2"
+    tag: "89-1.4"
     registry: ghcr.io/huggingface
     repository: text-embeddings-inference
     revision: refs/pr/4
-    useGpu: false
+    useGpu: true
     args: []
