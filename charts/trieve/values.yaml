@@ -43,38 +43,40 @@ keycloak:
           - auth.localtrieve.com
         secretName: auth-localtrieve-com
 
+# optionalTo enable our pdf2md service, this auto connects to your Trieve instance
+#
 pdf2md:
-  enabled: true
-
-  clickhouse:
-    enabled: false
-
-    connection:
-      clickhouseDB: default
-      clickhouseUser: default
-      clickhousePassword: clickhouse
-      clickhouseUrl: http://clickhouse-trieve-local-trieve:8123
-      
-  redis:
-    enabled: false
-    connection: redis://:password@trieve-local-redis-master:6379
-
-  config:
-
-    llm:
-      # We recommend openrouter because they accept
-      # a larger payload size. 
-      baseUrl: https://openrouter.ai/api/v1
-      apiKey: sk-**********************************************************************
-      model: gpt-*******
-
-  s3:
-    # Keep the same s3 creds or change as needed
-    endpoint: https://bucket-s3bucket.s3.amazonaws.com
-    accessKey: NXVN****************
-    secretKey: czc3L***********************************
-    bucket: pdf2md-s3bucket
-    region: us-east-2
+  enabled: false
+#
+#   clickhouse:
+#     enabled: false
+#
+#     connection:
+#       clickhouseDB: default
+#       clickhouseUser: default
+#       clickhousePassword: clickhouse
+#       clickhouseUrl: http://clickhouse-trieve-local-trieve:8123
+#       
+#   redis:
+#     enabled: false
+#     connection: redis://:password@trieve-local-redis-master:6379
+#
+#   config:
+#
+#     llm:
+#       # We recommend openrouter because they accept
+#       # a larger payload size. 
+#       baseUrl: https://openrouter.ai/api/v1
+#       apiKey: sk-**********************************************************************
+#       model: gpt-*******
+#
+#   s3:
+#     # Keep the same s3 creds or change as needed
+#     endpoint: https://bucket-s3bucket.s3.amazonaws.com
+#     accessKey: NXVN****************
+#     secretKey: czc3L***********************************
+#     bucket: pdf2md-s3bucket
+#     region: us-east-2
 
 clickhouse:
   enabled: true
