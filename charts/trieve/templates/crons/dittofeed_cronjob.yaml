@@ -1,3 +1,4 @@
+{{- if .Values.containers.ditto_feed_cronjob }}
 apiVersion: batch/v1
 kind: CronJob
 metadata:
@@ -26,3 +27,4 @@ spec:
             envFrom:
               - configMapRef:
                   name: trieve-server-config
+{{- end }}

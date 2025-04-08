@@ -187,86 +187,86 @@ redis:
 
 containers:
   server:
-    tag: sha-2b6d5eb
+    tag: sha-408a679
     repository: server
     resources: {}
   ingest:
-    tag: sha-2b6d5eb
+    tag: sha-408a679
     repository: ingest
     replicas: 3
     resources: {}
   update_worker:
-    tag: sha-2b6d5eb
+    tag: sha-408a679
     repository: update-worker
     replicas: 1
     resources: {}
   batch_etl_worker:
-    tag: sha-2b6d5eb
+    tag: sha-408a679
     repository: etl-worker
     replicas: 1
     resources: {}
   file_worker:
-    tag: sha-2b6d5eb
+    tag: sha-408a679
     repository: file_worker
     replicas: 1
     resources: {}
   delete_worker:
-    tag: sha-2b6d5eb
+    tag: sha-408a679
     repository: delete_worker
     replicas: 1
     resources: {}
   group_worker:
-    tag: sha-2b6d5eb
+    tag: sha-408a679
     repository: group_worker
     replicas: 1
     resources: {}
   sync_qdrant:
-    tag: sha-2b6d5eb
+    tag: sha-408a679
     repository: sync_qdrant
     resources: {}
   bktree_worker:
-    tag: sha-2b6d5eb
+    tag: sha-408a679
     repository: bktree-worker
     replicas: 1
     resources: {}
   word_worker:
-    tag: sha-2b6d5eb
+    tag: sha-408a679
     repository: word-worker
     replicas: 1
     resources: {}
   word_id_cronjob:
-    tag: sha-2b6d5eb
+    tag: sha-408a679
     repository: word-id-cronjob
     replicas: 1
     resources: {}
   crawl_worker:
-    tag: sha-2b6d5eb
+    tag: sha-408a679
     repository: crawl-worker
     replicas: 1
     resources: {}
-  ditto_feed_cronjob:
-    tag: sha-2b6d5eb
-    repository: dittofeed-sync-worker
-    resources: {}
-  csv_jsonl_worker:
-    tag: sha-2b6d5eb
-    repository: csv-jsonl-worker
-    replicas: 1
-    resources: {}
-  clone_qdrant:
-    tag: sha-2b6d5eb
-    repository: clone_qdrant
-    resources: {}
+  # ditto_feed_cronjob:
+  #   tag: sha-2b6d5eb
+  #   repository: dittofeed-sync-worker
+  #   resources: {}
+  # csv_jsonl_worker:
+  #   tag: sha-2b6d5eb
+  #   repository: csv-jsonl-worker
+  #   replicas: 1
+  #   resources: {}
+  # clone_qdrant:
+  #   tag: sha-2b6d5eb
+  #   repository: clone_qdrant
+  #   resources: {}
   search:
-    tag: sha-62f367a
+    tag: sha-2b3b45a
     repository: search
     resources: {}
   chat:
-    tag: sha-62f367a
+    tag: sha-2b3b45a
     repository: chat
     resources: {}
   dashboard:
-    tag: sha-62f367a
+    tag: sha-2b3b45a
     repository: dashboard
     resources: {}
   clickhouse_collapse:

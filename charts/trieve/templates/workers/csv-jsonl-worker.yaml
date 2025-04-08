@@ -1,3 +1,4 @@
+{{- if .Values.containers.csv_jsonl_worker }}
 {{- include "trieve.worker.deployment" (dict 
   "name" "csv-jsonl-worker"
   "replicas" ($.Values.containers.csv_jsonl_worker.replicas | default 0)
@@ -11,3 +12,4 @@
   "Template" $.Template
 )
 -}}
+{{- end }}

@@ -6,7 +6,7 @@ This helm chart contains multiple dependencies for an easy 1 click install proce
 
 It is recommend that these are installed as seperate releases if you plan on doing this in a prodcution environment.
 
-(It is much harder to migrate the databases if they are in a helm release)
+(It is harder to migrate the databases if they are in a helm release)
 
 - `qdrant` via officially supported subchart
 - `postgres` (custom subchart using cnpg operator)
