@@ -1,66 +1,328 @@
-environment: gcloud # Set to aws if deploying to 
-useGpu: true
+global:
+  image:
+    registry: trieve
+    imagePullPolicy: Always
+    # Optional if using your own repository
+    # the default is 
+    # imagePullSecrets: 
+    #   - name: pull-secret-name
+
+postgres:
+  # Enables Postgres via the subchart
+  enabled: true
+  # Installs cloudnative-pg operator
+  installCrds: true
+  # Pulls from secret if postgres.enabled = true
+  # dbURI: "postgres://postgres:password@postgres.default.svc.cluster.local:5432/trieve"
+  # This requires installing cloud-native-pg operator https://cloudnative-pg.io/documentation/1.24/installation_upgrade/
+  clusterSpec:
+    # CloudNativePg template spec
+    instances: 1
+    storage:
+      size: 10Gi
+
+keycloak:
+  ## WARNING THIS IS NOT PRODUCTION SAFE.
+  ## THIS USeS A DEFAULT REALM EXPORT.
+  ## YOU MUST MAKE A NEW keycloak realm
+  ## TO HARDEN THIS.
+
+  # Install keycloak subchart
+  enabled: true
+  # Installs the keycloak crd / operator
+  installCrds: true
+  #
+  ingress:
+    host: auth.yourdomain.com
+    ingressClassName: gce
+    # annotations:
+    #   cert-manager.io/cluster-issuer: "letsencrypt"
+    #   nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    # tls:
+    #   - hosts:
+    #       - auth.yourdomain.com
+    #     secretName: auth-yourdomain-com
+
+# optionalTo enable our pdf2md service, this auto connects to your Trieve instance
+#
+pdf2md:
+  enabled: false
+#
+#   clickhouse:
+#     enabled: false
+#
+#     connection:
+#       clickhouseDB: default
+#       clickhouseUser: default
+#       clickhousePassword: clickhouse
+#       clickhouseUrl: http://clickhouse-trieve-local-trieve:8123
+#       
+#   redis:
+#     enabled: false
+#     connection: redis://:password@trieve-local-redis-master:6379
+#
+#   config:
+#
+#     llm:
+#       # We recommend openrouter because they accept
+#       # a larger payload size. 
+#       baseUrl: https://openrouter.ai/api/v1
+#       apiKey: sk-**********************************************************************
+#       model: gpt-*******
+#
+#   s3:
+#     # Keep the same s3 creds or change as needed
+#     endpoint: https://bucket-s3bucket.s3.amazonaws.com
+#     accessKey: NXVN****************
+#     secretKey: czc3L***********************************
+#     bucket: pdf2md-s3bucket
+#     region: us-east-2
+
+clickhouse:
+  enabled: true
+  installCrds: true
+
+  connection:
+    # TODO modify password
+    clickhouseDB: default
+    clickhouseUser: default
+    clickhousePassword: clickhouse
+    clickhouseUrl: http://clickhouse-trieve-local-trieve:8123
+
+  clickhouseSpec:
+    ## A ClickhouseInstallation template spec
+    configuration:
+      users:
+        default/password: clickhouse
+        # to allow access outside from kubernetes
+        default/networks/ip:
+          - 0.0.0.0/0
+      clusters:
+        - name: cluster1
+          templates:
+            podTemplate: clickhouse-pod-template
+          layout:
+            shardsCount: 1
+            replicasCount: 1
+    templates:
+      podTemplates:
+        - name: clickhouse-pod-template
+          spec:
+            containers:
+              - name: clickhouse
+                image: trieve/clickhouse:latest
+                digest: sha256:324f541975c43e96b5df6ede74632102d89172b703960bbf01f1842ccf48d240
+                volumeMounts:
+                  - name: data-storage-vc
+                    mountPath: /var/lib/clickhouse
+                  - name: log-storage-vc
+                    mountPath: /var/log/clickhouse-server
+                env:
+                  - name: CLICKHOUSE_ADMIN_PASSWORD
+                    value: clickhouse
+
+      volumeClaimTemplates:
+        - name: data-storage-vc
+          spec:
+            accessModes:
+              - ReadWriteOnce
+            resources:
+              requests:
+                storage: 20Gi
+        - name: log-storage-vc
+          spec:
+            accessModes:
+              - ReadWriteOnce
+            resources:
+              requests:
+                storage: 2Gi
+
+minio:
+  enabled: false
+
+qdrant:
+  enabled: true
+  url: http://trieve-local-qdrant:6334
+
+  # TODO modify apiKey
+  apiKey: "qdrant-api-key"
+  # Qdrant values.yaml spec
+  replicaCount: 3
+  livenessProbe:
+    enabled: false
+  # HIGHLY RECOMMENDED QDRANT NODES go on a dedicated node
+  # tolerations: 
+  # - key: "qdrant-node"
+  #   operator: "Exists"
+  #   effect: "NoSchedule"
+  metrics:
+    serviceMonitor:
+      enabled: false
+  podDisruptionBudget:
+    enabled: false
+    maxUnavailable: 1
+  persistence:
+    size: "10Gi"
+  requests:
+    cpu: 1
+    memory: 5Gi
+
+redis:
+  enabled: true
+  metrics:
+    enabled: false
+    serviceMonitor:
+      enabled: false
+  auth:
+    password: "password"
+  master:
+    disableCommands: []
+    persistence:
+      enabled: false
+    pdb:
+      create: false
+    resources:
+      limits:
+        memory: 5Gi
+  replica:
+    replicaCount: 0
+
 containers:
   server:
-    tag: latest
+    tag: sha-408a679
+    repository: server
     resources: {}
   ingest:
-    tag: latest
+    tag: sha-408a679
+    repository: ingest
+    replicas: 3
+    resources: {}
+  update_worker:
+    tag: sha-408a679
+    repository: update-worker
+    replicas: 1
+    resources: {}
+  batch_etl_worker:
+    tag: sha-408a679
+    repository: etl-worker
+    replicas: 1
     resources: {}
   file_worker:
-    tag: latest
+    tag: sha-408a679
+    repository: file_worker
+    replicas: 1
     resources: {}
   delete_worker:
-    tag: latest
+    tag: sha-408a679
+    repository: delete_worker
+    replicas: 1
     resources: {}
   group_worker:
-    tag: latest
+    tag: sha-408a679
+    repository: group_worker
+    replicas: 1
     resources: {}
   sync_qdrant:
-    tag: latest
+    tag: sha-408a679
+    repository: sync_qdrant
     resources: {}
   bktree_worker:
-    tag: latest
+    tag: sha-408a679
+    repository: bktree-worker
+    replicas: 1
     resources: {}
   word_worker:
-    tag: latest
+    tag: sha-408a679
+    repository: word-worker
+    replicas: 1
     resources: {}
   word_id_cronjob:
-    tag: latest
+    tag: sha-408a679
+    repository: word-id-cronjob
+    replicas: 1
     resources: {}
-  clone_qdrant:
-    tag: latest
+  crawl_worker:
+    tag: sha-408a679
+    repository: crawl-worker
+    replicas: 1
     resources: {}
+  # ditto_feed_cronjob:
+  #   tag: sha-2b6d5eb
+  #   repository: dittofeed-sync-worker
+  #   resources: {}
+  # csv_jsonl_worker:
+  #   tag: sha-2b6d5eb
+  #   repository: csv-jsonl-worker
+  #   replicas: 1
+  #   resources: {}
+  # clone_qdrant:
+  #   tag: sha-2b6d5eb
+  #   repository: clone_qdrant
+  #   resources: {}
   search:
-    tag: latest
+    tag: sha-2b3b45a
+    repository: search
     resources: {}
   chat:
-    tag: latest
+    tag: sha-2b3b45a
+    repository: chat
     resources: {}
   dashboard:
-    tag: latest
+    tag: sha-2b3b45a
+    repository: dashboard
     resources: {}
-  clustering_cron:
-    tag: latest
   clickhouse_collapse:
     tag: latest
+    repository: clickhouse-collapse-query-script
 domains:
   dashboard:
+    disabled: false
     host: dashboard.yourdomain.com
-    class: gce
+    # TODO modify as needed for your ingress
+    class: nginx
+    # annotations:
+    #   cert-manager.io/cluster-issuer: "letsencrypt"
+    #   nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    # tls:
+    #   - hosts:
+    #       - dashboard.yourdomain.com
+    #     secretName: dashboard-ansear-ai
   server:
+    disabled: false
     host: api.yourdomain.com
-    class: gce
+    class: nginx
+    # annotations:
+    #   cert-manager.io/cluster-issuer: "letsencrypt"
+    #   nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    # tls:
+    #   - hosts:
+    #       - dashboard.yourdomain.com
+    #     secretName: dashboard-ansear-ai
   search:
+    disabled: false
     host: search.yourdomain.com
-    class: gce
+    class: nginx
+    # annotations:
+    #   cert-manager.io/cluster-issuer: "letsencrypt"
+    #   nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    # tls:
+    #   - hosts:
+    #       - dashboard.yourdomain.com
+    #     secretName: dashboard-ansear-ai
   chat:
+    disabled: false
     host: chat.yourdomain.com
-    class: gce
-postgres:
-  dbURI: "postgres://postgres:password@cloud-sql:5432/postgres"
+    class: nginx
+    # annotations:
+    #   cert-manager.io/cluster-issuer: "letsencrypt"
+    #   nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    # tls:
+    #   - hosts:
+    #       - dashboard.yourdomain.com
+    #     secretName: dashboard-ansear-ai
 config:
   vite:
+    # TODO modify domain name
     apiHost: http://api.yourdomain.com/api
     searchUiUrl: http://search.yourdomain.com
     chatUiUrl: http://chat.yourdomain.com
@@ -68,10 +330,9 @@ config:
     dashboardUrl: http://dashboard.yourdomain.com
   redis:
     connections: 3
-    uri: redis://10.83.15.3
+    # Will be auto set from subchart
+    # uri: "redis://:@redis:6379"
   qdrant:
-    qdrantUrl: http://qdrant.default.svc.cluster.local:6334
-    apiKey: "qdrant-api-key"
     quantizeVectors: false  # If set to true will binary quantize
     replicationFactor: 2
     shardCount: 12
@@ -80,20 +341,17 @@ config:
       - 1536
       - 1024
       - 3072
-  analytics:
-    enabled: true
-    clickhouseDB: default
-    clickhouseUser: default
-    clickhousePassword: clickhouse
-    clickhouseUrl: http://clickhouse-trieve-clickhouse.default.svc.cluster.local:8123
   delete_worker:
     batch_size: 10000
   trieve:
+    # TODO modify domain name
+    baseServerUrl: http://api.yourdomain.com
+
+    disableCrons: true
     batch_limit: 120
     bm25Active: true
     unlimited: true
     cookieSecure: false
-    baseServerUrl: http://api.yourdomain.com
     embeddingServerOrigin: http://embedding-jina.default.svc.cluster.local
     sparseServerQueryOrigin: http://embedding-splade-query.default.svc.cluster.local
     sparseServerDocOrigin: http://embedding-splade-doc.default.svc.cluster.local
@@ -101,27 +359,37 @@ config:
     embeddingServerOriginJinaCode: http://api.jina.ai/v1
     jinaCodeApiKey: jina_************************************************************
     rerankerServerOrigin: http://embedding-reranker.default.svc.cluster.local
-    salt: goodsaltisveryyummy
-    secretKey: 1234512345123451234512345123451234512345123451234512345123451234512345123451234h
-    adminApiKey: "admin"
+    salt: tbbqfnygvfirellhzzl
+    secretKey: lkjadsf2349asdlfkj2334209ualkfsdlfkj1023u19312l3kj12l3kjsaf0d9u90823l1kj3209u34h
+    # This adminApiKey can be used 
+    adminApiKey: "ad91lkjad190adfal"
     anthropicAPIKey: ""
     subtraceToken: ""
   oidc:
+    # OIDC also will need to allow the following redirect urls'
+    # - dashboard.yourdomain.com/*
+    # - chat.yourdomain.com/*
+    # - search.yourdomain.com/*
     clientSecret: "YllmLDTy67MbsUBrUAWvQ7z9aMq0QcKx"
     clientId: "trieve"
-    issuerUrl: "https://auth.yourdomain.com/realms/trieve"
-    authRedirectUrl: "https://auth.yourdomain.com/realms/trieve/protocol/openid-connect/auth"
+    issuerUrl: "http://trieve-keycloak-service:8080/realms/trieve"
+    authRedirectUrl: "http://trieve-keycloak-service:8080/realms/trieve/protocol/openid-connect/auth"
   smtp:
+    # TODO fill with email creds, only impacts email invites to a new dataset, not password reset.
+    # Will not cause erros to self hosters if not set
     relay: ""
     username: ""
     password: ""
     emailAddress: ""
   llm:
+    # optional: add openrouter.ai api key
     apiKey: ""
   openai:
+    # optional: add openai api key
     apiKey: "sk-************************************************************"
     baseUrl: https://api.openai.com/v1
   s3:
+    # TODO update with your s3 credentials
     endpoint: ""
     accessKey: ""
     secretKey: ""
@@ -129,25 +397,60 @@ config:
   stripe:
     secret: ""
     webhookSecret: ""
-clone: {}
 embeddings:
-  # - name: jina
-  #   revision: main
-  #   model: jinaai/jina-embeddings-v2-base-en
-  #   args: []
-  # - name: splade-doc
-  #   model: naver/efficient-splade-VI-BT-large-doc
-  #   revision: main
-  #   args: ["--pooling", "splade"]
-  # - name: splade-query
-  #   model: naver/efficient-splade-VI-BT-large-query
-  #   revision: main
-  #   args: ["--pooling", "splade"]
-  # - name: m3
-  #   model: BAAI/bge-m3
-  #   revision: main
-  #   args: []
-  # - name: reranker
-  #   model: BAAI/bge-reranker-large
-  #   revision: refs/pr/4
-  #   args: []
+  ## For nodeSelector / affinity to use see
+  ## https://github.com/huggingface/text-embeddings-inference?tab=readme-ov-file#docker-images
+  ## These are the default values that expect `g2-standard-4` nodes to run with
+  - name: jina
+    revision: main
+    model: jinaai/jina-embeddings-v2-base-en
+    tag: "89-1.2"
+    registry: ghcr.io/huggingface
+    repository: text-embeddings-inference
+    useGpu: true
+    # Example of adding nodeSelector and affinity to the pod 
+    # can be used for any other embedding listed model below
+    # nodeSelector:
+    #   kubernetes.io/os: linux
+    # affinity:
+    #   nodeAffinity:
+    #     requiredDuringSchedulingIgnoredDuringExecution:
+    #       nodeSelectorTerms:
+    #       - matchExpressions:
+    #         - key: kubernetes.io/os
+    #           operator: In
+    #           values:
+    #           - linux
+    args: []
+  - name: splade-doc
+    model: naver/efficient-splade-VI-BT-large-doc
+    tag: "89-1.4"
+    registry: ghcr.io/huggingface
+    repository: text-embeddings-inference
+    revision: main
+    useGpu: true
+    args: ["--pooling", "splade"]
+  - name: splade-query
+    model: naver/efficient-splade-VI-BT-large-query
+    tag: "89-1.4"
+    registry: ghcr.io/huggingface
+    repository: text-embeddings-inference
+    revision: main
+    useGpu: true
+    args: ["--pooling", "splade"]
+  - name: m3
+    model: BAAI/bge-m3
+    tag: "89-1.4"
+    registry: ghcr.io/huggingface
+    repository: text-embeddings-inference
+    revision: main
+    useGpu: true
+    args: []
+  - name: reranker
+    model: BAAI/bge-reranker-large
+    tag: "89-1.4"
+    registry: ghcr.io/huggingface
+    repository: text-embeddings-inference
+    revision: refs/pr/4
+    useGpu: true
+    args: []
