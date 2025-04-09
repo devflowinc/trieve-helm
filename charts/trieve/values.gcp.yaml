@@ -15,6 +15,9 @@ postgres:
   # Pulls from secret if postgres.enabled = true
   # dbURI: "postgres://postgres:password@postgres.default.svc.cluster.local:5432/trieve"
   # This requires installing cloud-native-pg operator https://cloudnative-pg.io/documentation/1.24/installation_upgrade/
+  secretKeyRef:
+    name: trieve-local-trieve-postgres-app
+    key: uri
   clusterSpec:
     # CloudNativePg template spec
     instances: 1
@@ -163,9 +166,10 @@ qdrant:
     maxUnavailable: 1
   persistence:
     size: "10Gi"
-  requests:
-    cpu: 1
-    memory: 5Gi
+  resources:
+    requests:
+      cpu: 1
+      memory: 5Gi
 
 redis:
   enabled: true
@@ -424,7 +428,7 @@ embeddings:
     args: []
   - name: splade-doc
     model: naver/efficient-splade-VI-BT-large-doc
-    tag: "89-1.4"
+    tag: "turing-1.4"
     registry: ghcr.io/huggingface
     repository: text-embeddings-inference
     revision: main
@@ -432,7 +436,7 @@ embeddings:
     args: ["--pooling", "splade"]
   - name: splade-query
     model: naver/efficient-splade-VI-BT-large-query
-    tag: "89-1.4"
+    tag: "turing-1.4"
     registry: ghcr.io/huggingface
     repository: text-embeddings-inference
     revision: main
@@ -440,7 +444,7 @@ embeddings:
     args: ["--pooling", "splade"]
   - name: m3
     model: BAAI/bge-m3
-    tag: "89-1.4"
+    tag: "turing-1.4"
     registry: ghcr.io/huggingface
     repository: text-embeddings-inference
     revision: main
@@ -448,7 +452,7 @@ embeddings:
     args: []
   - name: reranker
     model: BAAI/bge-reranker-large
-    tag: "89-1.4"
+    tag: "turing-1.4"
     registry: ghcr.io/huggingface
     repository: text-embeddings-inference
     revision: refs/pr/4
