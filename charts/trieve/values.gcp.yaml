@@ -408,7 +408,7 @@ embeddings:
   - name: jina
     revision: main
     model: jinaai/jina-embeddings-v2-base-en
-    tag: "89-1.2"
+    tag: "turing-1.4"
     registry: ghcr.io/huggingface
     repository: text-embeddings-inference
     useGpu: true
