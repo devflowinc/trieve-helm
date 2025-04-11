@@ -2,6 +2,10 @@ kind: Service
 apiVersion: v1
 metadata:
   name: dashboard-service
+  {{ with .Values.domains.dashboard.serviceAnnotations }}
+  annotations:
+    {{ toYaml . | indent 4 }}
+  {{ end -}}
   labels:
     app.kubernetes.io/name: dashboard-service
     app.kubernetes.io/instance: {{ .Release.Name }}

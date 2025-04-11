@@ -3,7 +3,7 @@ apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: ingress-keycloak
-j annotations:
+  annotations:
     kubernetes.io/ingress.class: {{ .class | default "gce" }}
     {{- with .annotations }}
       {{- toYaml . | nindent 4 }}

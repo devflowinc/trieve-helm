@@ -1,25 +1,11 @@
-{{- if eq $.Values.environment "gcloud" }}
----
-apiVersion: cloud.google.com/v1
-kind: BackendConfig
-metadata:
-  name: server-backend-config
-spec:
-  healthCheck:
-    checkIntervalSec: 15
-    port: 8090
-    type: HTTP
-    requestPath: /api/health
-{{- end }}
----
 kind: Service
 apiVersion: v1
 metadata:
   name: server-service
+  {{ with .Values.domains.server.serviceAnnotations }}
   annotations:
-  {{- if eq $.Values.environment "gcloud" }}
-    cloud.google.com/backend-config: '{"ports": {"80":"server-backend-config"}}'
-  {{- end }}
+    {{ toYaml . | indent 4 }}
+  {{ end -}}
   labels:
     app.kubernetes.io/name: server-service
     app.kubernetes.io/instance: {{ $.Release.Name }}

@@ -36,7 +36,7 @@ keycloak:
   installCrds: true
   #
   ingress:
-    host: auth.yourdomain.com
+    host: 
     ingressClassName: gce
     # annotations:
     #   cert-manager.io/cluster-issuer: "letsencrypt"
@@ -281,9 +281,13 @@ containers:
 domains:
   dashboard:
     disabled: false
-    host: dashboard.yourdomain.com
+    host: 
+    serviceAnnotations:
+      cloud.google.com/neg: '{"ingress": true}'
     # TODO modify as needed for your ingress
-    class: nginx
+    class: gce
+    annotations:
+      kubernetes.io/ingress.class: gce
     # annotations:
     #   cert-manager.io/cluster-issuer: "letsencrypt"
     #   nginx.ingress.kubernetes.io/ssl-redirect: "true"
@@ -293,9 +297,12 @@ domains:
     #     secretName: dashboard-ansear-ai
   server:
     disabled: false
-    host: api.yourdomain.com
-    class: nginx
-    # annotations:
+    host:
+    class: gce
+    serviceAnnotations:
+      cloud.google.com/neg: '{"ingress": true}'
+    annotations:
+      kubernetes.io/ingress.class: gce
     #   cert-manager.io/cluster-issuer: "letsencrypt"
     #   nginx.ingress.kubernetes.io/ssl-redirect: "true"
     # tls:
@@ -304,8 +311,12 @@ domains:
     #     secretName: dashboard-ansear-ai
   search:
     disabled: false
-    host: search.yourdomain.com
-    class: nginx
+    host:
+    class: gce
+    serviceAnnotations:
+      cloud.google.com/neg: '{"ingress": true}'
+    annotations:
+      kubernetes.io/ingress.class: gce
     # annotations:
     #   cert-manager.io/cluster-issuer: "letsencrypt"
     #   nginx.ingress.kubernetes.io/ssl-redirect: "true"
@@ -315,8 +326,13 @@ domains:
     #     secretName: dashboard-ansear-ai
   chat:
     disabled: false
-    host: chat.yourdomain.com
-    class: nginx
+    host:
+    class: gce
+    serviceAnnotations:
+      kubernetes.io/ingress.class: gce
+      # cloud.google.com/neg: '{"ingress": true}'
+    annotations:
+      kubernetes.io/ingress.class: gce
     # annotations:
     #   cert-manager.io/cluster-issuer: "letsencrypt"
     #   nginx.ingress.kubernetes.io/ssl-redirect: "true"

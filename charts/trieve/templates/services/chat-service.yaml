@@ -2,6 +2,10 @@ kind: Service
 apiVersion: v1
 metadata:
   name: chat-service
+  {{ with $.Values.domains.chat.serviceAnnotations }}
+  annotations:
+    {{ toYaml . | indent 4 }}
+  {{ end -}}
   labels:
     app.kubernetes.io/name: chat-service
     app.kubernetes.io/instance: {{ .Release.Name }}

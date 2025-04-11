@@ -5,8 +5,6 @@ metadata:
   labels:
     app.kubernetes.io/name: dashboard
     app.kubernetes.io/instance: {{ .Release.Name }}
-  annotations:
-    checksum/config: {{ include (print $.Template.BasePath "/settings/frontend-configmap.yaml") . | sha256sum }}
 spec:
   replicas: {{ .Values.containers.dashboard.replicas | default 1 }}
   selector:
@@ -15,6 +13,8 @@ spec:
       app.kubernetes.io/instance: {{ .Release.Name }}
   template:
     metadata:
+      annotations:
+        checksum/config: {{ include (print $.Template.BasePath "/settings/frontend-configmap.yaml") . | sha256sum }}
       labels:
         app.kubernetes.io/name: dashboard
         app.kubernetes.io/instance: {{ .Release.Name }}

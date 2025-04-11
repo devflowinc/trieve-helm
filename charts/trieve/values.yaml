@@ -35,13 +35,13 @@ keycloak:
   ingress:
     host: auth.localtrieve.com
     ingressClassName: nginx
-    annotations:
-      cert-manager.io/cluster-issuer: "letsencrypt"
-      nginx.ingress.kubernetes.io/ssl-redirect: "true"
-    tls:
-      - hosts:
-          - auth.localtrieve.com
-        secretName: auth-localtrieve-com
+    annotations: {}
+      # cert-manager.io/cluster-issuer: "letsencrypt"
+      # nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    tls: {}
+      # - hosts:
+      #     - auth.localtrieve.com
+      #   secretName: auth-localtrieve-com
 
 # optionalTo enable our pdf2md service, this auto connects to your Trieve instance
 #
@@ -277,9 +277,10 @@ containers:
 domains:
   dashboard:
     disabled: false
-    host: dashboard.yourdomain.com
+    host:
     # TODO modify as needed for your ingress
     class: nginx
+    serviceAnnotations: {}
     # annotations:
     #   cert-manager.io/cluster-issuer: "letsencrypt"
     #   nginx.ingress.kubernetes.io/ssl-redirect: "true"
@@ -289,8 +290,9 @@ domains:
     #     secretName: dashboard-ansear-ai
   server:
     disabled: false
-    host: api.yourdomain.com
+    host:
     class: nginx
+    serviceAnnotations: {}
     # annotations:
     #   cert-manager.io/cluster-issuer: "letsencrypt"
     #   nginx.ingress.kubernetes.io/ssl-redirect: "true"
@@ -300,8 +302,9 @@ domains:
     #     secretName: dashboard-ansear-ai
   search:
     disabled: false
-    host: search.yourdomain.com
+    host: 
     class: nginx
+    serviceAnnotations: {}
     # annotations:
     #   cert-manager.io/cluster-issuer: "letsencrypt"
     #   nginx.ingress.kubernetes.io/ssl-redirect: "true"
@@ -311,8 +314,9 @@ domains:
     #     secretName: dashboard-ansear-ai
   chat:
     disabled: false
-    host: chat.yourdomain.com
+    host: 
     class: nginx
+    serviceAnnotations: {}
     # annotations:
     #   cert-manager.io/cluster-issuer: "letsencrypt"
     #   nginx.ingress.kubernetes.io/ssl-redirect: "true"
@@ -345,7 +349,7 @@ config:
     batch_size: 10000
   trieve:
     # TODO modify domain name
-    baseServerUrl: http://api.yourdomain.com
+    baseServerUrl:
 
     disableCrons: true
     batch_limit: 120
