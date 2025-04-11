@@ -4,12 +4,12 @@ kind: Ingress
 metadata:
   name: ingress-keycloak
   annotations:
-    kubernetes.io/ingress.class: {{ .class | default "gce" }}
+    kubernetes.io/ingress.class: {{ .ingressClassName | default "gce" }}
     {{- with .annotations }}
       {{- toYaml . | nindent 4 }}
     {{- end }}
 spec:
-  ingressClassName: {{ .class | default "gce" }}
+  ingressClassName: {{ .ingressClassName | default "gce" }}
   {{- if .tls }}
   tls:
     {{- range .tls}}
@@ -20,6 +20,11 @@ spec:
       secretName: {{ .secretName | quote }}
     {{- end }}
   {{- end }}
+  defaultBackend:
+    service:
+      name: trieve-keycloak-service
+      port:
+        number: 8080
   rules:
     - host: {{ .host }}
       http:
