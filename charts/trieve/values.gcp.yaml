@@ -1,3 +1,4 @@
+environment: gcloud
 global:
   image:
     registry: trieve
@@ -36,7 +37,7 @@ keycloak:
   installCrds: true
   #
   ingress:
-    host: auth.yourdomain.com
+    host: au-auth.ansear.ai
     ingressClassName: gce
     # annotations:
     #   cert-manager.io/cluster-issuer: "letsencrypt"
@@ -281,9 +282,13 @@ containers:
 domains:
   dashboard:
     disabled: false
-    host: dashboard.yourdomain.com
+    host: au-dashboard.ansear.ai
+    serviceAnnotations:
+      cloud.google.com/neg: '{"ingress": true}'
     # TODO modify as needed for your ingress
-    class: nginx
+    class: gce
+    annotations:
+      kubernetes.io/ingress.class: gce
     # annotations:
     #   cert-manager.io/cluster-issuer: "letsencrypt"
     #   nginx.ingress.kubernetes.io/ssl-redirect: "true"
@@ -293,9 +298,12 @@ domains:
     #     secretName: dashboard-ansear-ai
   server:
     disabled: false
-    host: api.yourdomain.com
-    class: nginx
-    # annotations:
+    host: au-api.ansear.ai
+    class: gce
+    serviceAnnotations:
+      cloud.google.com/neg: '{"ingress": true}'
+    annotations:
+      kubernetes.io/ingress.class: gce
     #   cert-manager.io/cluster-issuer: "letsencrypt"
     #   nginx.ingress.kubernetes.io/ssl-redirect: "true"
     # tls:
@@ -304,8 +312,12 @@ domains:
     #     secretName: dashboard-ansear-ai
   search:
     disabled: false
-    host: search.yourdomain.com
-    class: nginx
+    host: au-search.ansear.ai
+    class: gce
+    serviceAnnotations:
+      cloud.google.com/neg: '{"ingress": true}'
+    annotations:
+      kubernetes.io/ingress.class: gce
     # annotations:
     #   cert-manager.io/cluster-issuer: "letsencrypt"
     #   nginx.ingress.kubernetes.io/ssl-redirect: "true"
@@ -315,8 +327,13 @@ domains:
     #     secretName: dashboard-ansear-ai
   chat:
     disabled: false
-    host: chat.yourdomain.com
-    class: nginx
+    host: au-chat.ansear.ai
+    class: gce
+    serviceAnnotations:
+      kubernetes.io/ingress.class: gce
+      # cloud.google.com/neg: '{"ingress": true}'
+    annotations:
+      kubernetes.io/ingress.class: gce
     # annotations:
     #   cert-manager.io/cluster-issuer: "letsencrypt"
     #   nginx.ingress.kubernetes.io/ssl-redirect: "true"
@@ -327,11 +344,11 @@ domains:
 config:
   vite:
     # TODO modify domain name
-    apiHost: http://api.yourdomain.com/api
-    searchUiUrl: http://search.yourdomain.com
-    chatUiUrl: http://chat.yourdomain.com
+    apiHost: http://au-api.ansear.ai/api
+    searchUiUrl: http://au-search.ansear.ai
+    chatUiUrl: http://au-chat.ansear.ai
     sentryChatDsn: ""
-    dashboardUrl: http://dashboard.yourdomain.com
+    dashboardUrl: http://au-dashboard.ansear.ai
   redis:
     connections: 3
     # Will be auto set from subchart
@@ -349,7 +366,7 @@ config:
     batch_size: 10000
   trieve:
     # TODO modify domain name
-    baseServerUrl: http://api.yourdomain.com
+    baseServerUrl: http://au-api.ansear.ai
 
     disableCrons: true
     batch_limit: 120
@@ -377,7 +394,7 @@ config:
     clientSecret: "YllmLDTy67MbsUBrUAWvQ7z9aMq0QcKx"
     clientId: "trieve"
     issuerUrl: "http://trieve-keycloak-service:8080/realms/trieve"
-    authRedirectUrl: "http://trieve-keycloak-service:8080/realms/trieve/protocol/openid-connect/auth"
+    authRedirectUrl: "http://au-auth.trieve.ai/realms/trieve/protocol/openid-connect/auth"
   smtp:
     # TODO fill with email creds, only impacts email invites to a new dataset, not password reset.
     # Will not cause erros to self hosters if not set

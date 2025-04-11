@@ -2,11 +2,15 @@ kind: Service
 apiVersion: v1
 metadata:
   name: search-service
+  {{ with $.Values.domains.search.serviceAnnotations }}
+  annotations:
+    {{ toYaml . | indent 4 }}
+  {{ end -}}
   labels:
     app.kubernetes.io/name: search-service
     app.kubernetes.io/instance: {{ .Release.Name }}
 spec:
-  type: ClusterIP
+  type: LoadBalancer
   ports:
     - port: 3001
       targetPort: 80
