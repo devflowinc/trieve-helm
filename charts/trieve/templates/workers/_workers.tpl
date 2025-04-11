@@ -6,8 +6,6 @@ metadata:
   labels:
     app.kubernetes.io/name: {{ .name }}
     app.kubernetes.io/instance: {{ $.instance }}
-  annotations:
-    checksum/config: {{ include (print $.Template.BasePath "/settings/backend-configmap.yaml") . | sha256sum }}
 spec:
   replicas: {{ .replicas | default 1 }}
   selector:
@@ -16,6 +14,8 @@ spec:
       app.kubernetes.io/instance: {{ $.Release.Name }}
   template:
     metadata:
+      annotations:
+        checksum/config: {{ include (print $.Template.BasePath "/settings/backend-configmap.yaml") . | sha256sum }}
       labels:
         app.kubernetes.io/name: {{ .name }}
         app.kubernetes.io/instance: {{ $.Release.Name }}

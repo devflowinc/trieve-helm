@@ -49,7 +49,7 @@ data:
   AWS_REGION: {{ .Values.config.s3.region }}
   {{- end }}
   COOKIE_SECURE: {{ .Values.config.trieve.cookieSecure | quote }}
-  TIKA_URL: tika.default.svc.cluster.local
+  TIKA_URL: http://tika.default.svc.cluster.local:9998
   OPENAI_BASE_URL: {{ .Values.config.openai.baseUrl }}
   {{- if .Values.config.stripe.secret }}
   STRIPE_SECRET: {{ .Values.config.stripe.secret }}
