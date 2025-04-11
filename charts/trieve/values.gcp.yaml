@@ -281,7 +281,7 @@ containers:
 domains:
   dashboard:
     disabled: false
-    host: 
+    host: dashboard.yourdomain.com
     serviceAnnotations:
       cloud.google.com/neg: '{"ingress": true}'
     # TODO modify as needed for your ingress
@@ -297,7 +297,7 @@ domains:
     #     secretName: dashboard-ansear-ai
   server:
     disabled: false
-    host:
+    host: api.yourdomain.com
     class: gce
     serviceAnnotations:
       cloud.google.com/neg: '{"ingress": true}'
@@ -311,7 +311,7 @@ domains:
     #     secretName: dashboard-ansear-ai
   search:
     disabled: false
-    host:
+    host: search.yourdomain.com
     class: gce
     serviceAnnotations:
       cloud.google.com/neg: '{"ingress": true}'
@@ -326,7 +326,7 @@ domains:
     #     secretName: dashboard-ansear-ai
   chat:
     disabled: false
-    host:
+    host: chat.yourdomain.com
     class: gce
     serviceAnnotations:
       kubernetes.io/ingress.class: gce
