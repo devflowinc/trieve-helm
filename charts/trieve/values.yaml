@@ -26,11 +26,14 @@ keycloak:
   ## THIS USeS A DEFAULT REALM EXPORT.
   ## YOU MUST MAKE A NEW keycloak realm
   ## TO HARDEN THIS.
-
   # Install keycloak subchart
   enabled: true
   # Installs the keycloak crd / operator
   installCrds: true
+
+  persistence:
+    storageClassName: {}
+    size: 10Gi
   #
   ingress:
     host: auth.localtrieve.com

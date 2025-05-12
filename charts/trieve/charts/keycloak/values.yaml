@@ -8,3 +8,8 @@ ingress:
   #   - hosts:
   #       - dashboard.yourdomain.com
   #     secretName: dashboard-ansear-ai
+
+persistence:
+  accessModes: ["ReadWriteOnce"]
+  storageClassName: {}
+  size: 10Gi
