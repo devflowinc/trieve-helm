@@ -35,6 +35,10 @@ spec:
       affinity:
         {{- toYaml $service.affinity | nindent 8 }}
       {{- end }}
+      {{- if $service.tolerations }}
+      tolerations:
+        {{- toYaml $service.tolerations | nindent 8 }}
+      {{- end }}
       containers:
         - name: {{ $name }}
           readinessProbe:
