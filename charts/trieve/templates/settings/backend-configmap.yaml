@@ -85,8 +85,8 @@ data:
   PAGEFIND_CDN_BASE_URL: {{ .Values.config.trieve.pagefindCdnUrl }}
   BATCH_ETL_URL: {{ .Values.config.trieve.batchEtlUrl }}
   {{- if .Values.pdf2md.enabled }}
-  PDF2MD_URL: "pdf2md-service:8081"
+  PDF2MD_URL: "http://pdf2md-service:8081"
   {{- end }}
   {{- if .Values.pdf2md.enabled }}
-  PDF2MD_API_KEY: {{ .Values.pdf2md.config.pdf2md.apiKey }}
+  PDF2MD_AUTH: {{ .Values.pdf2md.config.pdf2md.apiKey }}
   {{- end }}
