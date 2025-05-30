@@ -6,4 +6,5 @@ data:
   VITE_API_HOST: {{ $.Values.config.vite.apiHost }}
   VITE_SEARCH_UI_URL: {{ $.Values.config.vite.searchUiUrl }}
   VITE_DASHBOARD_URL: {{ $.Values.config.vite.dashboardUrl }}
+  VITE_CHAT_UI_URL: {{ $.Values.config.vite.chatUiUrl }}
   VITE_BM25_ACTIVE: {{ .Values.config.trieve.bm25Active | quote }}
