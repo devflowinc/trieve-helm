@@ -20,4 +20,27 @@ spec:
   selector:
     app.kubernetes.io/name: {{ $name }}
     app.kubernetes.io/instance: {{ $.Release.Name }}
+---
+{{- if $service.serviceMonitor }} 
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: "{{ $name }}-monitor"
+  labels:
+    app.kubernetes.io/instance: {{ $.Release.Name }}
+    app.kubernetes.io/name: {{ $name }}
+spec:
+  endpoints:
+    - interval: 30s
+      path: /metrics
+      port: svc
+      scheme: http
+  namespaceSelector:
+    matchNames:
+      - default
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: {{ $name }}
+      app.kubernetes.io/instance: {{ $.Release.Name }}
+{{- end }}
 {{- end }}
