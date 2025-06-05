@@ -2,7 +2,7 @@ apiVersion: v2
 name: trieve
 description: Helm chart expressing Trieve deployment without any dependencies
 type: application
-version: 0.2.23
+version: 0.2.24
 appVersion: "0.12.0"
 dependencies:
   - name: qdrant
@@ -23,6 +23,6 @@ dependencies:
     version: 0.0.0
     condition: postgres.enabled
   - name: pdf2md
-    version: 0.0.5
+    version: 0.0.6
     repository: https://devflowinc.github.io/trieve-helm
     condition: pdf2md.enabled
