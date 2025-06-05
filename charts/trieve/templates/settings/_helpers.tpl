@@ -150,4 +150,9 @@ redis://:{{ $redisPassword }}@{{ $svcName }}:6379
       name: {{ .Values.clickhouse.connection.clickhousePasswordRef.secretName }}
       key: {{ .Values.clickhouse.connection.clickhousePasswordRef.secretKey }}
 {{- end }}
+- name: QDRANT_API_KEY
+  valueFrom:
+    secretKeyRef:
+      name: {{ .Release.Name }}-qdrant-apikey
+      key: api-key
 {{- end -}}
