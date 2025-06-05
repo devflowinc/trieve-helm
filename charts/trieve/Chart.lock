@@ -16,6 +16,6 @@ dependencies:
   version: 0.0.0
 - name: pdf2md
   repository: https://devflowinc.github.io/trieve-helm
-  version: 0.0.4
-digest: sha256:b7be1337a18ca785995962693431a9eab0a81052970cc66ce7c3af1e8612b5ae
-generated: "2025-03-17T03:47:53.184998029-07:00"
+  version: 0.0.5
+digest: sha256:049012099a3cccb54104fc8dd1a6c78b6b32076339f3bca6f6ae3fd030906e7a
+generated: "2025-06-05T01:34:43.420956675-07:00"
