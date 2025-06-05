@@ -7,7 +7,11 @@ metadata:
     app.kubernetes.io/name: {{ .name }}
     app.kubernetes.io/instance: {{ $.Release.Name }}
   annotations:
+    {{- if $.Values.config.asSecret }}
+    checksum/config: {{ include (print $.Template.BasePath "/secret.yaml") $ | sha256sum }}
+    {{- else }}
     checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") $ | sha256sum }}
+    {{- end }}
 spec:
   selector:
     matchLabels:
@@ -16,7 +20,11 @@ spec:
   template:
     metadata:
       annotations:
+        {{- if $.Values.config.asSecret }}
+        checksum/config: {{ include (print $.Template.BasePath "/secret.yaml") $ | sha256sum }}
+        {{- else }}
         checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") $ | sha256sum }}
+        {{- end }}
       labels:
         app.kubernetes.io/name: {{ .name }}
         app.kubernetes.io/instance: {{ $.Release.Name }}
@@ -40,7 +48,12 @@ spec:
             {{- toYaml .resources | nindent 12 }}
           {{- end }}
           envFrom:
+            {{- if $.Values.config.asSecret }}
+            - secretRef:
+                name: pdf2md-config
+            {{- else }}
             - configMapRef:
                 name: pdf2md-config
+            {{- end }}
 ---
 {{- end }}

@@ -66,17 +66,31 @@ clickhouse:
 s3:
   endpoint: https://bucket-s3bucket.s3.amazonaws.com
   accessKey: NXVN****************
+  accessKeyRef:
+    enabled: false
+    secretName: "my-pdf2md-s3-credentials"
+    secretKey: "accessKey"
   secretKey: czc3L***********************************
+  secretKeyRef:
+    enabled: false
+    secretName: "my-pdf2md-s3-credentials"
+    secretKey: "secretKey"
   bucket: pdf2md-s3bucket
   region: us-east-2
 
 config:
+  asSecret: false
+  strictLookup: false
 
   llm:
     # We recommend openrouter because they accept
     # a larger payload size. 
     baseUrl: https://openrouter.ai/api/v1
     apiKey: sk-**********************************************************************
+    apiKeyRef:
+      enabled: false
+      secretName: "my-pdf2md-llm-secret"
+      secretKey: "apiKey"
     model: gpt-*******
 
   chunkr:
@@ -87,6 +101,10 @@ config:
     # PDF2MD has a single ADMIN API apiKey
     # Change as needed
     apiKey: CQS2ZQUGG43CNqn1CVfreire
+    apiKeyRef:
+      enabled: false
+      secretName: "my-pdf2md-auth-secret"
+      secretKey: "apiKey"
 
 containers:
   - name: pdf2md-server
