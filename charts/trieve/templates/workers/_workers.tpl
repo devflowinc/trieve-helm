@@ -40,12 +40,8 @@ spec:
           - configMapRef:
               name: trieve-server-config
           {{- end }}
-        {{- if .env }}
         env:
-          {{- range .env }}
-          - {{ . | toYaml | nindent 12 }}
-          {{- end }}
-        {{- end }}
+          {{- include "trieve.secrets" . | nindent 10 }}
         {{- if .resources }}
         resources:
           {{- toYaml .resources | nindent 12 }}

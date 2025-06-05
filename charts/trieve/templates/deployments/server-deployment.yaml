@@ -74,3 +74,5 @@ spec:
           - configMapRef:
               name: trieve-server-config
           {{- end }}
+        env:
+          {{- include "trieve.secrets" . | nindent 10 }}

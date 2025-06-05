@@ -107,13 +107,24 @@ clickhouse:
     clickhouseDB: default
     clickhouseUser: default
     clickhousePassword: clickhouse
+    clickhousePasswordRef:
+      enabled: false
+      secretName: ""
+      secretKey: ""
     clickhouseUrl: http://clickhouse-trieve-local-trieve:8123
 
   clickhouseSpec:
     ## A ClickhouseInstallation template spec
     configuration:
       users:
+        # Use secret reference instead of hardcoded password (requires operator 0.23.0+)
+        # For production, set clickhousePasswordRef.enabled to true and remove the hardcoded password
         default/password: clickhouse
+        # default/password_sha256_hex:
+        #   valueFrom:
+        #     secretKeyRef:
+        #       name: trieve-clickhouse-password-secret
+        #       key: password
         # to allow access outside from kubernetes
         default/networks/ip:
           - 0.0.0.0/0
