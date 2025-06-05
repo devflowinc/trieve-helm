@@ -4,7 +4,11 @@ kind: CronJob
 metadata:
   name: dittofeed-cronjob
   annotations:
+    {{- if $.Values.config.trieve.asSecret }}
+    checksum/config: {{ include (print $.Template.BasePath "/settings/backend-secrets.yaml") . | sha256sum }}
+    {{- else }}
     checksum/config: {{ include (print $.Template.BasePath "/settings/backend-configmap.yaml") . | sha256sum }}
+    {{- end }}
   labels:
     app.kubernetes.io/name: dittofeed-cronjob
     app.kubernetes.io/instance: {{ .Release.Name }}
@@ -25,6 +29,11 @@ spec:
           - name: dittofeed-cronjob
             image: {{ printf "%s/%s:%s" $.Values.global.image.registry $.Values.containers.ditto_feed_cronjob.repository .Values.containers.word_id_cronjob.tag }}
             envFrom:
+              {{- if $.Values.config.trieve.asSecret }}
+              - secretRef:
+                  name: trieve-server-secret
+              {{- else }}
               - configMapRef:
                   name: trieve-server-config
+              {{- end }}
 {{- end }}

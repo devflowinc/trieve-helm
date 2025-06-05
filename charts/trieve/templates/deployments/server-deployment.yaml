@@ -25,7 +25,11 @@ spec:
   template:
     metadata:
       annotations:
+        {{- if $.Values.config.trieve.asSecret }}
+        checksum/config: {{ include (print $.Template.BasePath "/settings/backend-secrets.yaml") . | sha256sum }}
+        {{- else }}
         checksum/config: {{ include (print $.Template.BasePath "/settings/backend-configmap.yaml") . | sha256sum }}
+        {{- end }}
       labels:
         app.kubernetes.io/name: server
         app.kubernetes.io/instance: {{ .Release.Name }}
@@ -63,5 +67,10 @@ spec:
         ports:
           - containerPort: 8090
         envFrom:
+          {{- if .Values.config.trieve.asSecret }}
+          - secretRef:
+              name: trieve-server-secret
+          {{- else }}
           - configMapRef:
               name: trieve-server-config
+          {{- end }}

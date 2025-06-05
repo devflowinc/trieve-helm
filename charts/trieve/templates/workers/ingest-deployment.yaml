@@ -9,5 +9,6 @@
   "Values" $.Values
   "Release" $.Release
   "Template" $.Template
+  "Chart" $.Chart
 )
 -}}

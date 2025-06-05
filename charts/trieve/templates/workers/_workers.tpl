@@ -15,7 +15,11 @@ spec:
   template:
     metadata:
       annotations:
+        {{- if $.Values.config.trieve.asSecret }}
+        checksum/config: {{ include (print $.Template.BasePath "/settings/backend-secrets.yaml") . | sha256sum }}
+        {{- else }}
         checksum/config: {{ include (print $.Template.BasePath "/settings/backend-configmap.yaml") . | sha256sum }}
+        {{- end }}
       labels:
         app.kubernetes.io/name: {{ .name }}
         app.kubernetes.io/instance: {{ $.Release.Name }}
@@ -29,8 +33,13 @@ spec:
         image: {{ printf "%s/%s:%s" $.Values.global.image.registry .image.repository .image.tag }}
         imagePullPolicy: {{ $.Values.global.imagePullPolicy }}
         envFrom:
+          {{- if $.Values.config.trieve.asSecret }}
+          - secretRef:
+              name: trieve-server-secret
+          {{- else }}
           - configMapRef:
               name: trieve-server-config
+          {{- end }}
         {{- if .env }}
         env:
           {{- range .env }}

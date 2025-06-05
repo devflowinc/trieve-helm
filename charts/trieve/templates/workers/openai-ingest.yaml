@@ -9,6 +9,7 @@
   "Values" $.Values
   "Release" $.Release
   "Template" $.Template
+  "Chart" $.Chart
   "env" (list
     (dict
       "name" "INGESTION_QUEUE_NAME" 

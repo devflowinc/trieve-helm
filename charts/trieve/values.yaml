@@ -15,6 +15,9 @@ postgres:
   # Pulls from secret if postgres.enabled = true
   # dbURI: "postgres://postgres:password@postgres.default.svc.cluster.local:5432/trieve"
   # This requires installing cloud-native-pg operator https://cloudnative-pg.io/documentation/1.24/installation_upgrade/
+  secretKeyRef: # For postgresql connection URI from a secret
+    name: trieve-local-trieve-postgres-app # Example, adjust as needed
+    key: uri
   clusterSpec:
     # CloudNativePg template spec
     instances: 1
@@ -65,19 +68,33 @@ pdf2md:
 #     connection: redis://:password@trieve-local-redis-master:6379
 #
 #   config:
-#
-#     llm:
-#       # We recommend openrouter because they accept
-#       # a larger payload size. 
+#     llm: # LLM used BY pdf2md service
 #       baseUrl: https://openrouter.ai/api/v1
-#       apiKey: sk-**********************************************************************
+#       apiKey: ""
+#       apiKeyRef:
+#         enabled: false
+#         secretName: "my-pdf2md-llm-secret"
+#         secretKey: "apiKey"
 #       model: gpt-*******
+#     pdf2md: # API key for the pdf2md service itself, if it requires one to be authenticated by Trieve backend
+#       apiKey: "" 
+#       apiKeyRef:
+#         enabled: false
+#         secretName: "my-pdf2md-auth-secret"
+#         secretKey: "apiKey"
 #
-#   s3:
-#     # Keep the same s3 creds or change as needed
+#   s3: # S3 used BY pdf2md service
 #     endpoint: https://bucket-s3bucket.s3.amazonaws.com
-#     accessKey: NXVN****************
-#     secretKey: czc3L***********************************
+#     accessKey: ""
+#     accessKeyRef:
+#       enabled: false
+#       secretName: "my-pdf2md-s3-credentials"
+#       secretKey: "accessKey"
+#     secretKey: ""
+#     secretKeyRef:
+#       enabled: false
+#       secretName: "my-pdf2md-s3-credentials"
+#       secretKey: "secretKey"
 #     bucket: pdf2md-s3bucket
 #     region: us-east-2
 
@@ -146,18 +163,10 @@ minio:
 qdrant:
   enabled: true
   url: http://trieve-local-qdrant:6334
-
-  # TODO modify apiKey
-  apiKey: "qdrant-api-key"
-  # Qdrant values.yaml spec
+  apiKey: "qdrant-api-key" # This could also be made ref-able if needed
   replicaCount: 3
   livenessProbe:
     enabled: false
-  # HIGHLY RECOMMENDED QDRANT NODES go on a dedicated node
-  # tolerations: 
-  # - key: "qdrant-node"
-  #   operator: "Exists"
-  #   effect: "NoSchedule"
   metrics:
     serviceMonitor:
       enabled: false
@@ -177,7 +186,7 @@ redis:
     serviceMonitor:
       enabled: false
   auth:
-    password: "password"
+    password: "password" # This is often handled by the redis subchart itself. If this is for app config, make ref-able.
   master:
     disableCommands: []
     persistence:
@@ -249,19 +258,6 @@ containers:
     repository: crawl-worker
     replicas: 1
     resources: {}
-  # ditto_feed_cronjob:
-  #   tag: sha-2b6d5eb
-  #   repository: dittofeed-sync-worker
-  #   resources: {}
-  # csv_jsonl_worker:
-  #   tag: sha-2b6d5eb
-  #   repository: csv-jsonl-worker
-  #   replicas: 1
-  #   resources: {}
-  # clone_qdrant:
-  #   tag: sha-2b6d5eb
-  #   repository: clone_qdrant
-  #   resources: {}
   search:
     tag: sha-2b3b45a
     repository: search
@@ -277,59 +273,31 @@ containers:
   clickhouse_collapse:
     tag: latest
     repository: clickhouse-collapse-query-script
+
 domains:
   dashboard:
     disabled: false
     host:
-    # TODO modify as needed for your ingress
     class: nginx
     serviceAnnotations: {}
-    # annotations:
-    #   cert-manager.io/cluster-issuer: "letsencrypt"
-    #   nginx.ingress.kubernetes.io/ssl-redirect: "true"
-    # tls:
-    #   - hosts:
-    #       - dashboard.yourdomain.com
-    #     secretName: dashboard-ansear-ai
   server:
     disabled: false
     host:
     class: nginx
     serviceAnnotations: {}
-    # annotations:
-    #   cert-manager.io/cluster-issuer: "letsencrypt"
-    #   nginx.ingress.kubernetes.io/ssl-redirect: "true"
-    # tls:
-    #   - hosts:
-    #       - dashboard.yourdomain.com
-    #     secretName: dashboard-ansear-ai
   search:
     disabled: false
     host: 
     class: nginx
     serviceAnnotations: {}
-    # annotations:
-    #   cert-manager.io/cluster-issuer: "letsencrypt"
-    #   nginx.ingress.kubernetes.io/ssl-redirect: "true"
-    # tls:
-    #   - hosts:
-    #       - dashboard.yourdomain.com
-    #     secretName: dashboard-ansear-ai
   chat:
     disabled: false
     host: 
     class: nginx
     serviceAnnotations: {}
-    # annotations:
-    #   cert-manager.io/cluster-issuer: "letsencrypt"
-    #   nginx.ingress.kubernetes.io/ssl-redirect: "true"
-    # tls:
-    #   - hosts:
-    #       - dashboard.yourdomain.com
-    #     secretName: dashboard-ansear-ai
+
 config:
   vite:
-    # TODO modify domain name
     apiHost: http://api.yourdomain.com/api
     searchUiUrl: http://search.yourdomain.com
     chatUiUrl: http://chat.yourdomain.com
@@ -337,10 +305,8 @@ config:
     dashboardUrl: http://dashboard.yourdomain.com
   redis:
     connections: 3
-    # Will be auto set from subchart
-    # uri: "redis://:@redis:6379"
   qdrant:
-    quantizeVectors: false  # If set to true will binary quantize
+    quantizeVectors: false
     replicationFactor: 2
     shardCount: 12
     vectorSizes:
@@ -351,9 +317,9 @@ config:
   delete_worker:
     batch_size: 10000
   trieve:
-    # TODO modify domain name
+    asSecret: false # New: Flag to store the main backend config as a Secret instead of ConfigMap
+    strictLookup: false # New: If true, Helm will fail if a secretRef points to a non-existent secret/key
     baseServerUrl:
-
     disableCrons: true
     batch_limit: 120
     bm25Active: true
@@ -364,46 +330,86 @@ config:
     sparseServerDocOrigin: http://embedding-splade-doc.default.svc.cluster.local
     embeddingServerOriginBGEM3: http://embedding-m3.default.svc.cluster.local
     embeddingServerOriginJinaCode: http://api.jina.ai/v1
-    jinaCodeApiKey: jina_************************************************************
+    jinaCodeApiKey: "" # Example: jina_************************************************************
+    jinaCodeApiKeyRef:
+      enabled: false
+      secretName: "my-jina-secret"
+      secretKey: "apiKey"
     rerankerServerOrigin: http://embedding-reranker.default.svc.cluster.local
-    salt: tbbqfnygvfirellhzzl
-    secretKey: lkjadsf2349asdlfkj2334209ualkfsdlfkj1023u19312l3kj12l3kjsaf0d9u90823l1kj3209u34h
-    # This adminApiKey can be used 
-    adminApiKey: "ad91lkjad190adfal"
+    salt: "tbbqfnygvfirellhzzl" # Should be a unique random string
+    secretKey: "lkjadsf2349asdlfkj2334209ualkfsdlfkj1023u19312l3kj12l3kjsaf0d9u90823l1kj3209u34h" # Should be a unique random string
+    adminApiKey: "" # Example: "ad91lkjad190adfal"
+    adminApiKeyRef:
+      enabled: false
+      secretName: "my-admin-api-key-secret"
+      secretKey: "adminApiKey"
     anthropicAPIKey: ""
+    anthropicAPIKeyRef:
+      enabled: false
+      secretName: "my-anthropic-secret"
+      secretKey: "apiKey"
     subtraceToken: ""
+    subtraceTokenRef:
+      enabled: false
+      secretName: "my-subtrace-secret"
+      secretKey: "token"
   oidc:
-    # OIDC also will need to allow the following redirect urls'
-    # - dashboard.yourdomain.com/*
-    # - chat.yourdomain.com/*
-    # - search.yourdomain.com/*
-    clientSecret: "YllmLDTy67MbsUBrUAWvQ7z9aMq0QcKx"
+    clientSecret: "" # Example: "YllmLDTy67MbsUBrUAWvQ7z9aMq0QcKx"
+    clientSecretRef:
+      enabled: false
+      secretName: "my-oidc-client-secret"
+      secretKey: "clientSecret"
     clientId: "trieve"
     issuerUrl: "http://trieve-keycloak-service:8080/realms/trieve"
     authRedirectUrl: "http://trieve-keycloak-service:8080/realms/trieve/protocol/openid-connect/auth"
   smtp:
-    # TODO fill with email creds, only impacts email invites to a new dataset, not password reset.
-    # Will not cause erros to self hosters if not set
     relay: ""
     username: ""
-    password: ""
+    password: "" # SMTP Password
+    passwordRef:
+      enabled: false
+      secretName: "my-smtp-credentials"
+      secretKey: "password"
     emailAddress: ""
-  llm:
-    # optional: add openrouter.ai api key
+  llm: # Main LLM API Key for Trieve backend features
     apiKey: ""
-  openai:
-    # optional: add openai api key
-    apiKey: "sk-************************************************************"
+    apiKeyRef:
+      enabled: false
+      secretName: "my-main-llm-apikey"
+      secretKey: "apiKey"
+  openai: # Main OpenAI API Key for Trieve backend features
+    apiKey: "" # Example: "sk-************************************************************"
+    apiKeyRef:
+      enabled: false
+      secretName: "my-openai-apikey"
+      secretKey: "apiKey"
     baseUrl: https://api.openai.com/v1
-  s3:
-    # TODO update with your s3 credentials
+  s3: # Main S3 credentials for Trieve backend features
     endpoint: ""
     accessKey: ""
+    accessKeyRef:
+      enabled: false
+      secretName: "my-main-s3-credentials"
+      secretKey: "accessKey"
     secretKey: ""
+    secretKeyRef:
+      enabled: false
+      secretName: "my-main-s3-credentials"
+      secretKey: "secretKey"
     bucket: ""
+    region: ""
   stripe:
     secret: ""
+    secretRef:
+      enabled: false
+      secretName: "my-stripe-secret"
+      secretKey: "secret"
     webhookSecret: ""
+    webhookSecretRef:
+      enabled: false
+      secretName: "my-stripe-webhook-secret"
+      secretKey: "webhookSecret"
+
 embeddings:
   ## For nodeSelector / affinity to use see
   ## https://github.com/huggingface/text-embeddings-inference?tab=readme-ov-file#docker-images
@@ -415,19 +421,6 @@ embeddings:
     registry: ghcr.io/huggingface
     repository: text-embeddings-inference
     useGpu: true
-    # Example of adding nodeSelector and affinity to the pod 
-    # can be used for any other embedding listed model below
-    # nodeSelector:
-    #   kubernetes.io/os: linux
-    # affinity:
-    #   nodeAffinity:
-    #     requiredDuringSchedulingIgnoredDuringExecution:
-    #       nodeSelectorTerms:
-    #       - matchExpressions:
-    #         - key: kubernetes.io/os
-    #           operator: In
-    #           values:
-    #           - linux
     args: []
   - name: splade-doc
     model: naver/efficient-splade-VI-BT-large-doc

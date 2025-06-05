@@ -6,7 +6,11 @@ metadata:
     app.kubernetes.io/name: delete-worker
     app.kubernetes.io/instance: {{ .Release.Name }}
   annotations:
+    {{- if $.Values.config.trieve.asSecret }}
+    checksum/config: {{ include (print $.Template.BasePath "/settings/backend-secrets.yaml") . | sha256sum }}
+    {{- else }}
     checksum/config: {{ include (print $.Template.BasePath "/settings/backend-configmap.yaml") . | sha256sum }}
+    {{- end }}
 spec:
   replicas: {{ .Values.containers.delete_worker.replicas | default 0 }}
   selector:
@@ -16,7 +20,11 @@ spec:
   template:
     metadata:
       annotations:
+        {{- if $.Values.config.trieve.asSecret }}
+        checksum/config: {{ include (print $.Template.BasePath "/settings/backend-secrets.yaml") . | sha256sum }}
+        {{- else }}
         checksum/config: {{ include (print $.Template.BasePath "/settings/backend-configmap.yaml") . | sha256sum }}
+        {{- end }}
       labels:
         app.kubernetes.io/name: delete-worker
         app.kubernetes.io/instance: {{ .Release.Name }}
@@ -25,8 +33,13 @@ spec:
       - name: delete-worker
         image: {{ printf "%s:%s" "trieve/delete_worker" .Values.containers.delete_worker.tag }}
         envFrom:
+          {{- if .Values.config.trieve.asSecret }}
+          - secretRef:
+              name: trieve-server-secret
+          {{- else }}
           - configMapRef:
               name: trieve-server-config
+          {{- end }}
         env:
           - name: DELETE_CHUNK_BATCH_SIZE
             value: {{ .Values.config.delete_worker.batch_size | quote }}

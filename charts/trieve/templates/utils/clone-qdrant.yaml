@@ -18,7 +18,11 @@ spec:
       template:
         metadata:
           annotations:
-            checksum/config: {{ include (print $.Template.BasePath "/settings/backend-configmap.yaml") . | sha256sum }}
+            {{- if $.Values.config.trieve.asSecret }}
+            checksum/config: {{ include (print $.Template.BasePath "/settings/backend-secrets.yaml") $ | sha256sum }}
+            {{- else }}
+            checksum/config: {{ include (print $.Template.BasePath "/settings/backend-configmap.yaml") $ | sha256sum }}
+            {{- end }}
         spec:
           restartPolicy: Never
           {{- if $.Values.global.imagePullSecrets }}
@@ -29,8 +33,13 @@ spec:
           - name: clone-qdrant-{{ $service.clone_name }}
             image: {{ printf "%s%s:%s" $.Values.global.image.registry $.Values.containers.clone_qdrant.repository $.Values.containers.clone_qdrant.tag }}
             envFrom:
+              {{- if $.Values.config.trieve.asSecret }}
+              - secretRef:
+                  name: trieve-server-secret
+              {{- else }}
               - configMapRef:
                   name: trieve-server-config
+              {{- end }}
             env:
               - name: ORIGIN_QDRANT_URL
                 value: {{ $service.origin }}
