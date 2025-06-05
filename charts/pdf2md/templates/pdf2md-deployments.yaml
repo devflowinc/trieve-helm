@@ -47,6 +47,35 @@ spec:
           resources:
             {{- toYaml .resources | nindent 12 }}
           {{- end }}
+          env:
+            {{- if $.Values.s3.accessKeyRef.enabled }}
+            - name: S3_ACCESS_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: {{ $.Values.s3.accessKeyRef.secretName }}
+                  key: {{ $.Values.s3.accessKeyRef.secretKey }}
+            {{- end }}
+            {{- if $.Values.s3.secretKeyRef.enabled }}
+            - name: S3_SECRET_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: {{ $.Values.s3.secretKeyRef.secretName }}
+                  key: {{ $.Values.s3.secretKeyRef.secretKey }}
+            {{- end }}
+            {{- if $.Values.config.llm.apiKeyRef.enabled }}
+            - name: LLM_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: {{ $.Values.config.llm.apiKeyRef.secretName }}
+                  key: {{ $.Values.config.llm.apiKeyRef.secretKey }}
+            {{- end }}
+            {{- if $.Values.config.pdf2md.apiKeyRef.enabled }}
+            - name: API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: {{ $.Values.config.pdf2md.apiKeyRef.secretName }}
+                  key: {{ $.Values.config.pdf2md.apiKeyRef.secretKey }}
+            {{- end }}
           envFrom:
             {{- if $.Values.config.asSecret }}
             - secretRef:
