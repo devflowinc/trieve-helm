@@ -106,6 +106,22 @@ config:
       secretName: "my-pdf2md-auth-secret"
       secretKey: "apiKey"
 
+env:
+  - name: CLICKHOUSE_PASSWORD
+    valueFrom:
+      secretKeyRef:
+        name: "clickhouse-secret"
+        key: "password"
+  - name: S3_SECRET_KEY
+    valueFrom:
+      secretKeyRef:
+        name: "s3-secret"
+        key: "secretKey"
+
+envFrom:
+  - secretRef:
+      name: "pdf2md-env-secrets"
+
 containers:
   - name: pdf2md-server
     

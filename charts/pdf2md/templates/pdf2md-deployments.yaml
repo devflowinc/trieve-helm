@@ -76,6 +76,9 @@ spec:
                   name: {{ $.Values.config.pdf2md.apiKeyRef.secretName }}
                   key: {{ $.Values.config.pdf2md.apiKeyRef.secretKey }}
             {{- end }}
+            {{- if $.Values.env }}
+            {{- toYaml $.Values.env | nindent 12 }}
+            {{- end }}
           envFrom:
             {{- if $.Values.config.asSecret }}
             - secretRef:
@@ -83,6 +86,9 @@ spec:
             {{- else }}
             - configMapRef:
                 name: pdf2md-config
+            {{- end }}
+            {{- if $.Values.envFrom }}
+            {{- toYaml $.Values.envFrom | nindent 12 }}
             {{- end }}
 ---
 {{- end }}
