@@ -198,6 +198,10 @@ redis:
       enabled: false
   auth:
     password: "password" # This is often handled by the redis subchart itself. If this is for app config, make ref-able.
+    secretKeyRef:
+      enabled: false
+      # secretName: "my-redis-secret"
+      # secretKey: "password"
   master:
     disableCommands: []
     persistence:

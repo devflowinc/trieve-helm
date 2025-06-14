@@ -28,14 +28,14 @@ clickhouse:
     # TODO modify password
     clickhouseDB: default
     clickhouseUser: default
-    clickhousePassword: cywtKFfCdRYq7H
+    clickhousePassword: password
     # May change as release name changes
     clickhouseUrl: http://clickhouse-pdf2md-trieve:8123
 
   clickhouseSpec:
     configuration:
       users:
-        default/password: cywtKFfCdRYq7H
+        default/password: password
         # to allow access outside from kubernetes
         default/networks/ip:
           - 0.0.0.0/0

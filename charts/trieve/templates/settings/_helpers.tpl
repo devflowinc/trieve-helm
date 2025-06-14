@@ -115,6 +115,8 @@ redis://:{{ $redisPassword }}@{{ $svcName }}:6379
       name: {{ .Values.config.trieve.subtraceTokenRef.secretName }}
       key: {{ .Values.config.trieve.subtraceTokenRef.secretKey }}
 {{- end }}
+
+{{ if .Values.pdf2md.enabled }}
 {{- if .Values.pdf2md.config.llm.apiKeyRef.enabled }}
 - name: PDF2MD_LLM_API_KEY
   valueFrom:
@@ -135,6 +137,7 @@ redis://:{{ $redisPassword }}@{{ $svcName }}:6379
     secretKeyRef:
       name: {{ .Values.pdf2md.s3.secretKeyRef.secretName }}
       key: {{ .Values.pdf2md.s3.secretKeyRef.secretKey }}
+{{- end }}
 {{- end }}
 {{- if .Values.redis.auth.secretKeyRef.enabled }}
 - name: REDIS_PASSWORD
