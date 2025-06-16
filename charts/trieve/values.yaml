@@ -175,7 +175,7 @@ qdrant:
   enabled: true
   url: http://trieve-local-qdrant:6334
   apiKey: "qdrant-api-key" # This could also be made ref-able if needed
-  replicaCount: 3
+  replicaCount: 1
   livenessProbe:
     enabled: false
   metrics:
