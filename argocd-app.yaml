@@ -1,0 +1,488 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: trieve
+  namespace: argocd
+spec:
+  project: default
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: trieve
+  source:
+    repoURL: https://devflowinc.github.io/trieve-helm
+    path: .
+    targetRevision: 0.2.28
+    chart: trieve
+    helm:
+      releaseName: trieve-local
+      valuesObject:
+        global:
+          image:
+            registry: trieve
+            imagePullPolicy: Always
+            # Optional if using your own repository
+            # the default is
+            # imagePullSecrets:
+            #   - name: pull-secret-name
+
+        postgres:
+          # Enables Postgres via the subchart
+          enabled: true
+          # Installs cloudnative-pg operator
+          installCrds: true
+          # Pulls from secret if postgres.enabled = true
+          # dbURI: "postgres://postgres:password@postgres.trieve.svc.cluster.local:5432/trieve"
+          # This requires installing cloud-native-pg operator https://cloudnative-pg.io/documentation/1.24/installation_upgrade/
+          secretKeyRef:
+            name: trieve-local-trieve-postgres-app
+            key: uri
+          clusterSpec:
+            # CloudNativePg template spec
+            instances: 1
+            storage:
+              size: 10Gi
+
+        # UNUSED
+        keycloak:
+          enabled: false
+          installCrds: false
+
+        # Using the pdf2md service, this auto connects to your Trieve instance
+        pdf2md:
+          enabled: true
+
+          clickhouse:
+            enabled: false
+            connection:
+              clickhouseDB: default
+              clickhouseUser: default
+              clickhousePassword: "" # Value moved to secrets-release.yaml
+              clickhousePasswordRef:
+                enabled: true
+                secretName: "trieve-unified-secret"
+                secretKey: "clickhousePassword"
+              clickhouseUrl: http://clickhouse-trieve-local-trieve:8123
+              
+          redis:
+            enabled: false
+            connection: redis://:password@trieve-local-redis-master:6379
+
+          env:
+            - name: CLICKHOUSE_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: "trieve-unified-secret"
+                  key: "clickhousePassword"
+
+          config:
+            asSecret: true
+            llm:
+              baseUrl: https://openrouter.ai/api/v1
+              apiKey: "" # Value moved to secrets-release.yaml
+              apiKeyRef:
+                enabled: true
+                secretName: "trieve-unified-secret"
+                secretKey: "llmApiKey"
+              model: openai/gpt-4o-mini
+            # pdf2md specific auth - this is for PDF2MD_AUTH in trieve-server-config
+            pdf2md:
+              apiKey: "" # Example: if this needs its own value/secret distinct from pdf2md.config.llm.apiKey
+              apiKeyRef:
+                enabled: false # Set to true and configure if pdf2md service requires auth key to be passed to trieve backend
+                secretName: ""
+                secretKey: ""
+
+          s3:
+            endpoint: https://us-sea-1.linodeobjects.com
+            accessKey: "" # Value moved to secrets-release.yaml
+            accessKeyRef:
+              enabled: true
+              secretName: "trieve-unified-secret"
+              secretKey: "s3AccessKey"
+            secretKey: "" # Value moved to secrets-release.yaml
+            secretKeyRef:
+              enabled: true
+              secretName: "trieve-unified-secret"
+              secretKey: "s3SecretKey"
+            bucket: csvjsonl
+            region: us-sea-1
+
+        clickhouse:
+          enabled: true
+          installCrds: true
+          connection:
+            clickhouseDB: default
+            clickhouseUser: default
+            clickhousePassword: "" # Value moved to secrets-release.yaml
+            clickhousePasswordRef:
+              enabled: true
+              secretName: "trieve-unified-secret"
+              secretKey: "clickhousePassword"
+            clickhouseUrl: http://clickhouse-trieve-local-trieve:8123
+          clickhouseSpec:
+            configuration:
+              users:
+                default/password:
+                  valueFrom:
+                    secretKeyRef:
+                      name: trieve-unified-secret
+                      key: clickhousePassword
+                default/networks/ip:
+                  - 0.0.0.0/0
+              clusters:
+                - name: cluster1
+                  templates:
+                    podTemplate: clickhouse-pod-template
+                  layout:
+                    shardsCount: 1
+                    replicasCount: 1
+            templates:
+              podTemplates:
+                - name: clickhouse-pod-template
+                  spec:
+                    containers:
+                      - name: clickhouse
+                        image: trieve/clickhouse:latest
+                        digest: sha256:324f541975c43e96b5df6ede74632102d89172b703960bbf01f1842ccf48d240
+                        volumeMounts:
+                          - name: data-storage-vc
+                            mountPath: /var/lib/clickhouse
+                          - name: log-storage-vc
+                            mountPath: /var/log/clickhouse-server
+                        env:
+                          - name: CLICKHOUSE_ADMIN_PASSWORD
+                            valueFrom:
+                              secretKeyRef:
+                                name: trieve-unified-secret
+                                key: clickhousePassword
+              volumeClaimTemplates:
+                - name: data-storage-vc
+                  spec:
+                    accessModes:
+                      - ReadWriteOnce
+                    resources:
+                      requests:
+                        storage: 20Gi
+                - name: log-storage-vc
+                  spec:
+                    accessModes:
+                      - ReadWriteOnce
+                    resources:
+                      requests:
+                        storage: 2Gi
+
+        minio:
+          enabled: false
+
+        qdrant:
+          enabled: true
+          url: http://trieve-local-qdrant:6334
+          apiKey: true # ApiKey will be auto generated
+          replicaCount: 1
+          livenessProbe:
+            enabled: false
+          metrics:
+            serviceMonitor:
+              enabled: false
+          podDisruptionBudget:
+            enabled: false
+            maxUnavailable: 1
+          persistence:
+            size: "10Gi"
+          resources:
+            requests:
+              cpu: 7
+              memory: 15Gi
+
+        redis:
+          enabled: true
+          metrics:
+            enabled: false
+            serviceMonitor:
+              enabled: false
+          auth:
+            secretKeyRef:
+              enabled: true
+              secretName: "trieve-unified-secret"
+              secretKey: "redisPassword"
+          master:
+            disableCommands: []
+            persistence:
+              enabled: false
+            pdb:
+              create: false
+            resources:
+              limits:
+                memory: 5Gi
+          replica:
+            replicaCount: 0
+
+        containers:
+          server:
+            tag: sha-408a679
+            repository: server
+            resources: {}
+          ingest:
+            tag: sha-408a679
+            repository: ingest
+            replicas: 5
+            resources: {}
+          update_worker:
+            tag: sha-408a679
+            repository: update-worker
+            replicas: 2
+            resources: {}
+          batch_etl_worker:
+            tag: sha-408a679
+            repository: etl-worker
+            replicas: 1
+            resources: {}
+          file_worker:
+            tag: sha-408a679
+            repository: file_worker
+            replicas: 5
+            resources: {}
+          delete_worker:
+            tag: sha-408a679
+            repository: delete_worker
+            replicas: 3
+            resources: {}
+          group_worker:
+            tag: sha-408a679
+            repository: group_worker
+            replicas: 1
+            resources: {}
+          sync_qdrant:
+            tag: sha-408a679
+            repository: sync_qdrant
+            resources: {}
+          bktree_worker:
+            tag: sha-408a679
+            repository: bktree-worker
+            replicas: 1
+            resources: {}
+          word_worker:
+            tag: sha-408a679
+            repository: word-worker
+            replicas: 1
+            resources: {}
+          word_id_cronjob:
+            tag: sha-408a679
+            repository: word-id-cronjob
+            replicas: 1
+            resources: {}
+          crawl_worker:
+            tag: sha-408a679
+            repository: crawl-worker
+            replicas: 1
+            resources: {}
+          search:
+            tag: sha-2b3b45a
+            repository: search
+            resources: {}
+          chat:
+            tag: sha-2b3b45a
+            repository: chat
+            resources: {}
+          dashboard:
+            tag: sha-2b3b45a
+            repository: dashboard
+            resources: {}
+          clickhouse_collapse:
+            tag: latest
+            repository: clickhouse-collapse-query-script
+
+        domains:
+          dashboard:
+            disabled: true
+          server:
+            disabled: true
+          search:
+            disabled: true
+          chat:
+            disabled: true
+
+        config:
+          vite:
+            apiHost: https://api.trieve.dev.connecteam.com/api
+            searchUiUrl: https://search.trieve.dev.connecteam.com
+            chatUiUrl: https://chat.trieve.dev.connecteam.com
+            sentryChatDsn: ""
+            dashboardUrl: https://dashboard.trieve.dev.connecteam.com
+          redis:
+            connections: 3
+          qdrant:
+            quantizeVectors: false
+            replicationFactor: 2
+            shardCount: 12
+          delete_worker:
+            batch_size: 10000
+          trieve:
+            asSecret: true
+            strictLookup: false
+            firecrawlUrl: ""
+            dittofeedApiKey: ""
+            pagefindCdnUrl: ""
+            batchEtlUrl: ""
+            baseServerUrl: https://api.trieve.dev.connecteam.com
+            disableCrons: true
+            batch_limit: 120
+            bm25Active: true
+            unlimited: true
+            cookieSecure: false
+            embeddingServerOrigin: http://embedding-jina.default.svc.cluster.local
+            sparseServerQueryOrigin: http://embedding-splade-query.default.svc.cluster.local
+            sparseServerDocOrigin: http://embedding-splade-doc.default.svc.cluster.local
+            embeddingServerOriginBGEM3: http://embedding-m3.default.svc.cluster.local
+            embeddingServerOriginJinaCode: http://api.jina.ai/v1
+            jinaCodeApiKey: "" # Value moved to secrets-release.yaml
+            jinaCodeApiKeyRef:
+              enabled: true
+              secretName: "trieve-unified-secret"
+              secretKey: "jinaCodeApiKey"
+            rerankerServerOrigin: http://embedding-reranker.default.svc.cluster.local
+            salt: tbbqfnygvfirellhzzl # This remains, will be part of trieve-server-secret
+            secretKey: lkjadsf2349asdlfkj2334209ualkfsdlfkj1023u19312l3kj12l3kjsaf0d9u90823l1kj3209u34h # This remains, will be part of trieve-server-secret
+            adminApiKey: "" # Value moved to secrets-release.yaml
+            adminApiKeyRef:
+              enabled: true
+              secretName: "trieve-unified-secret"
+              secretKey: "adminApiKey"
+            anthropicAPIKey: ""
+            subtraceToken: ""
+          oidc:
+            clientSecret: "" # Value moved to secrets-release.yaml
+            clientSecretRef:
+              enabled: true
+              secretName: "trieve-unified-secret"
+              secretKey: "oidcClientSecret"
+            clientId: "trieve"
+            issuerUrl: "https://auth.trieve.ai/realms/connectteam-dev"
+            authRedirectUrl: "https://auth.trieve.ai/realms/connectteam-dev/protocol/openid-connect/auth"
+          smtp:
+            relay: ""
+            username: ""
+            password: "" # Set to actual value or use passwordRef if needed
+            passwordRef:
+              enabled: false # Set to true and configure if SMTP password is in a secret
+              secretName: "trieve-unified-secret"
+              secretKey: "smtpPassword"
+            emailAddress: ""
+          llm:
+            apiKey: "" # Value moved to secrets-release.yaml
+            apiKeyRef:
+              enabled: true
+              secretName: "trieve-unified-secret"
+              secretKey: "llmApiKey"
+          openai:
+            apiKey: "" # Value moved to secrets-release.yaml
+            apiKeyRef:
+              enabled: true
+              secretName: "trieve-unified-secret"
+              secretKey: "openaiApiKey"
+            baseUrl: https://api.openai.com/v1
+          s3:
+            endpoint: https://us-sea-1.linodeobjects.com
+            accessKey: "" # Value moved to secrets-release.yaml
+            accessKeyRef:
+              enabled: true
+              secretName: "trieve-unified-secret"
+              secretKey: "s3AccessKey"
+            secretKey: "" # Value moved to secrets-release.yaml
+            secretKeyRef:
+              enabled: true
+              secretName: "trieve-unified-secret"
+              secretKey: "s3SecretKey"
+            bucket: csvjsonl
+            region: us-sea-1
+          stripe:
+            secret: ""
+            secretRef:
+              enabled: false # Set to true and configure if using Stripe
+              secretName: "trieve-stripe-secret" # Example name
+              secretKey: "secret"
+            webhookSecret: ""
+            webhookSecretRef:
+              enabled: false # Set to true and configure if using Stripe
+              secretName: "trieve-stripe-webhook-secret" # Example name
+              secretKey: "webhookSecret"
+
+        embeddings:
+          - name: jina
+            revision: main
+            model: jinaai/jina-embeddings-v2-base-en
+            tag: "turing-1.4"
+            registry: ghcr.io/huggingface
+            repository: text-embeddings-inference
+            useGpu: true
+            serviceMonitor: false
+            tolerations:
+              - key: "gpu-node"
+                operator: "Exists"
+                effect: "NoSchedule"
+            args: []
+          - name: splade-doc
+            model: naver/efficient-splade-VI-BT-large-doc
+            tag: "turing-1.4"
+            registry: ghcr.io/huggingface
+            repository: text-embeddings-inference
+            revision: main
+            useGpu: true
+            args: ["--pooling", "splade"]
+            serviceMonitor: false
+            tolerations:
+              - key: "gpu-node"
+                operator: "Exists"
+                effect: "NoSchedule"
+          - name: splade-query
+            model: naver/efficient-splade-VI-BT-large-query
+            tag: "turing-1.4"
+            registry: ghcr.io/huggingface
+            repository: text-embeddings-inference
+            revision: main
+            useGpu: true
+            args: ["--pooling", "splade"]
+            serviceMonitor: false
+            tolerations:
+              - key: "gpu-node"
+                operator: "Exists"
+                effect: "NoSchedule"
+          - name: m3
+            model: BAAI/bge-m3
+            tag: "turing-1.4"
+            registry: ghcr.io/huggingface
+            repository: text-embeddings-inference
+            revision: main
+            useGpu: true
+            args: []
+            serviceMonitor: false
+            tolerations:
+              - key: "gpu-node"
+                operator: "Exists"
+                effect: "NoSchedule"
+          - name: reranker
+            model: BAAI/bge-reranker-large
+            tag: "turing-1.4"
+            registry: ghcr.io/huggingface
+            repository: text-embeddings-inference
+            revision: refs/pr/4
+            useGpu: true
+            args: []
+            serviceMonitor: false
+            tolerations:
+              - key: "gpu-node"
+                operator: "Exists"
+                effect: "NoSchedule"
+
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+      allowEmpty: true
+    retry:
+      limit: 10
+      backoff:
+        duration: 15s
+        factor: 2
+        maxDuration: 1h
+  revisionHistoryLimit: 5
