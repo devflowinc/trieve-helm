@@ -1,22 +1,22 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: worker
-  namespace: firecrawl
+  name: firecrawl-worker
+  namespace: {{ .Release.Namespace }}
 spec:
   replicas: 10
   selector:
     matchLabels:
-      app: worker
+      app: firecrawl-worker
   template:
     metadata:
       labels:
-        app: worker
+        app: firecrawl-worker
     spec:
       imagePullSecrets:
         - name: trieve-pull-secret
       containers:
-        - name: worker
+        - name: firecrawl-worker
           image: {{ printf "trieve/firecrawl:%s" $.Values.firecrawl_tag }}
           imagePullPolicy: Always
           args: ["pnpm", "run", "workers"]

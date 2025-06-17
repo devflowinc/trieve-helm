@@ -1,22 +1,22 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: api
-  namespace: firecrawl
+  name: firecrawl-api
+  namespace: {{ .Release.Namespace }}
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: api
+      app: firecrawl-api
   template:
     metadata:
       labels:
-        app: api
+        app: firecrawl-api
     spec:
       imagePullSecrets:
         - name: trieve-pull-secret
       containers:
-        - name: api
+        - name: firecrawl-api
           image: {{ printf "trieve/firecrawl:%s" $.Values.firecrawl_tag }}
           imagePullPolicy: Always
           args: ["pnpm", "run", "start:production"]
@@ -32,7 +32,7 @@ spec:
             {{- end }}
           envFrom:
             - secretRef:
-                name: firecrawl-config
+                name: firecrawl-secret
           livenessProbe:
             httpGet:
               path: /v1/health/liveness
@@ -55,11 +55,11 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: api
-  namespace: firecrawl
+  name: firecrawl-api
+  namespace: {{ .Release.Namespace }}
 spec:
   selector:
-    app: api
+    app: firecrawl-api
   ports:
     - protocol: TCP
       port: 3002
