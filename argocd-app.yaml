@@ -1,7 +1,7 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: trieve
+  name: trieve-local
   namespace: argocd
 spec:
   project: default
@@ -9,10 +9,9 @@ spec:
     server: https://kubernetes.default.svc
     namespace: trieve
   source:
-    repoURL: https://devflowinc.github.io/trieve-helm
-    path: .
-    targetRevision: 0.2.28
-    chart: trieve
+    repoURL: https://github.com/devflowinc/trieve-helm.git
+    targetRevision: fix-argocd
+    path: charts/trieve
     helm:
       releaseName: trieve-local
       valuesObject:
@@ -473,6 +472,14 @@ spec:
               - key: "gpu-node"
                 operator: "Exists"
                 effect: "NoSchedule"
+
+        firecrawl:
+          enabled: true
+          redisSecret:
+            name: trieve-unified-secret
+            key: redisUrl
+          redis:
+            enabled: false
 
   syncPolicy:
     automated:

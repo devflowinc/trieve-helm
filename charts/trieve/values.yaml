@@ -490,7 +490,7 @@ firecrawl:
     password: 
   
   redis:
-    enabled: true
+    enabled: false
     commonConfiguration: |-
       maxclients 20000
     metrics:
