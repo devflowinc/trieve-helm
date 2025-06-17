@@ -31,6 +31,13 @@ redis://:{{ $redisPassword }}@{{ $svcName }}:6379
 {{- end -}}
 
 {{- define "trieve.secrets" -}}
+{{- if .Values.postgres.secretKeyRef -}}
+- name: DATABASE_URL
+  valueFrom:
+    secretKeyRef:
+      name: {{ .Values.postgres.secretKeyRef.name }}
+      key: {{ .Values.postgres.secretKeyRef.key }}
+{{- end }}
 {{- if .Values.config.trieve.adminApiKeyRef.enabled -}}
 - name: ADMIN_API_KEY
   valueFrom:
