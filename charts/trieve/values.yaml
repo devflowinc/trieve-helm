@@ -469,3 +469,46 @@ embeddings:
     revision: refs/pr/4
     useGpu: true
     args: []
+
+
+firecrawl:
+  puppeeter_service_tag: v0.0.13
+  firecrawl_tag: v0.0.55
+  
+  redisUri: "redis://:firecrawl-redis-password@firecrawl-redis-master:6379"
+  redisSecret: {}
+    # name: firecrawl-redis-secret
+    # key: redisUrl
+  
+  scrapingBeeApiKey: 
+  num_workers_per_queue: 8
+  proxy:
+    enabled: false
+    url: 
+    server: 
+    username: 
+    password: 
+  
+  redis:
+    enabled: true
+    commonConfiguration: |-
+      maxclients 20000
+    metrics:
+      enabled: true
+      serviceMonitor:
+        enabled: true
+    auth:
+      password: "firecrawl-redis-password"
+    master:
+      disableCommands: []
+      persistence:
+        enabled: false
+      pdb:
+        create: false
+      resources:
+        requests:
+          memory: 10Gi
+        limits:
+          memory: 10Gi
+    replica:
+      replicaCount: 0
