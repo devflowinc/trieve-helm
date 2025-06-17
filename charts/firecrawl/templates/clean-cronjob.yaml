@@ -2,7 +2,7 @@ apiVersion: batch/v1
 kind: CronJob
 metadata:
   name: clean-redis-firecrawl
-  namespace: firecrawl
+  namespace: {{ .Release.Namespace }}
   labels:
     app.kubernetes.io/name: clean-redis-firecrawl
 spec:
