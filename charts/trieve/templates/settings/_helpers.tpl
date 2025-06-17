@@ -16,7 +16,7 @@ redis://:{{ $redisPassword }}@{{ $svcName }}:6379
 {{- define "trieve.databaseUrl" -}}
 {{- if $.Values.postgres.dbURI -}}
 {{ .Values.postgres.dbURI }}
-{{- else if $.Values.postgres.secretKeyRef -}}
+{{- else if hasKey .Values.postgres "secretKeyRef" -}}
 {{- $secretName := .Values.postgres.secretKeyRef.name -}}
 {{- $secretKey := .Values.postgres.secretKeyRef.key -}}
 {{- with (lookup "v1" "Secret" .Release.Namespace $secretName) -}}
@@ -31,19 +31,19 @@ redis://:{{ $redisPassword }}@{{ $svcName }}:6379
 {{- end -}}
 
 {{- define "trieve.secrets" -}}
-{{- if .Values.postgres.secretKeyRef -}}
-- name: DATABASE_URL
-  valueFrom:
-    secretKeyRef:
-      name: {{ .Values.postgres.secretKeyRef.name }}
-      key: {{ .Values.postgres.secretKeyRef.key }}
-{{- end }}
 {{- if .Values.config.trieve.adminApiKeyRef.enabled -}}
 - name: ADMIN_API_KEY
   valueFrom:
     secretKeyRef:
       name: {{ .Values.config.trieve.adminApiKeyRef.secretName }}
       key: {{ .Values.config.trieve.adminApiKeyRef.secretKey }}
+{{- end }}
+{{ if .Values.postgres.secretKeyRef.name -}}
+- name: DATABASE_URL
+  valueFrom:
+    secretKeyRef:
+      name: {{ .Values.postgres.secretKeyRef.name }}
+      key: {{ .Values.postgres.secretKeyRef.key }}
 {{- end }}
 {{- if .Values.config.trieve.jinaCodeApiKeyRef.enabled }}
 - name: JINA_CODE_API_KEY
@@ -147,7 +147,7 @@ redis://:{{ $redisPassword }}@{{ $svcName }}:6379
 {{- end }}
 {{- end }}
 {{- if .Values.redis.auth.secretKeyRef.enabled }}
-- name: REDIS_PASSWORD
+- name: REDIS_URL
   valueFrom:
     secretKeyRef:
       name: {{ .Values.redis.auth.secretKeyRef.secretName }}
