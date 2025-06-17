@@ -1,0 +1,24 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: clean-redis-firecrawl
+  namespace: firecrawl
+  labels:
+    app.kubernetes.io/name: clean-redis-firecrawl
+spec:
+  schedule: "0 * * * *"
+  concurrencyPolicy: Replace
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          imagePullSecrets:
+            - name: trieve-pull-secret
+          restartPolicy: OnFailure
+          containers:
+            - name: curl-container
+              image: curlimages/curl:7.88.1
+              args:
+                - /bin/sh
+                - -c
+                - curl http://api.firecrawl.svc.cluster.local:3002/admin/@/clean-before-24h-complete-jobs

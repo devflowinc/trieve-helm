@@ -1,0 +1,58 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: playwright-service
+  namespace: firecrawl
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: playwright-service
+  template:
+    metadata:
+      labels:
+        app: playwright-service
+    spec:
+      imagePullSecrets:
+        - name: trieve-pull-secret
+      containers:
+        - name: playwright-service
+          image: {{ printf "trieve/puppeteer-service-ts:%s" $.Values.puppeeter_service_tag }}
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 3000
+          env:
+            {{- if $.Values.proxy.enabled }}
+            - name: PROXY_SERVER
+              value: {{ $.Values.proxy.server }}
+            - name: PROXY_USERNAME
+              value: {{ $.Values.proxy.username }}
+            - name: PROXY_PASSWORD
+              value: {{ $.Values.proxy.password }}
+            {{- end }}
+            - name: PROXY_URL
+              value: {{ $.Values.proxy.url }}
+            - name: BLOCK_MEDIA
+              value: "FALSE"
+            - name: MAX_CONCURRENCY
+              value: "20"
+            {{- if .Values.redisSecret.name }}
+            - name: REDIS_URL
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.redisSecret.name }}
+                  key: {{ .Values.redisSecret.key }}
+            {{- end }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: playwright-service
+  namespace: firecrawl
+spec:
+  selector:
+    app: playwright-service
+  ports:
+    - protocol: TCP
+      port: 3000
+      targetPort: 3000

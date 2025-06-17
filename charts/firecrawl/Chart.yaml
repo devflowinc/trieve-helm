@@ -1,0 +1,11 @@
+version: 0.0.1
+apiVersion: v2
+name: firecrawl-simple
+description: "FireCrawl"
+
+
+dependencies:
+  - name: redis
+    version: 21.0.2
+    repository: https://charts.bitnami.com/bitnami
+    condition: redis.enabled
