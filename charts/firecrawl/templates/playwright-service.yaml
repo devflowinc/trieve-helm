@@ -13,8 +13,10 @@ spec:
       labels:
         app: playwright-service
     spec:
+      {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
-        - name: trieve-pull-secret
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
       containers:
         - name: playwright-service
           image: {{ printf "trieve/puppeteer-service-ts:%s" $.Values.puppeeter_service_tag }}

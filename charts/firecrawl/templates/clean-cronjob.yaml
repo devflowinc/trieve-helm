@@ -12,8 +12,10 @@ spec:
     spec:
       template:
         spec:
+          {{- with .Values.imagePullSecrets }}
           imagePullSecrets:
-            - name: trieve-pull-secret
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
           restartPolicy: OnFailure
           containers:
             - name: curl-container

@@ -13,8 +13,10 @@ spec:
       labels:
         app: firecrawl-api
     spec:
+      {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
-        - name: trieve-pull-secret
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
       containers:
         - name: firecrawl-api
           image: {{ printf "trieve/firecrawl:%s" $.Values.firecrawl_tag }}
