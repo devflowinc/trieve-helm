@@ -87,9 +87,9 @@ spec:
             pdf2md:
               apiKey: "" # Example: if this needs its own value/secret distinct from pdf2md.config.llm.apiKey
               apiKeyRef:
-                enabled: false # Set to true and configure if pdf2md service requires auth key to be passed to trieve backend
-                secretName: ""
-                secretKey: ""
+                enabled: true # Set to true and configure if pdf2md service requires auth key to be passed to trieve backend
+                secretName: "trieve-unified-secret"
+                secretKey: "pdf2mdInternalAuth"
 
           s3:
             endpoint: https://us-sea-1.linodeobjects.com
@@ -478,14 +478,49 @@ spec:
           redisSecret:
             name: trieve-unified-secret
             key: redisUrl
+          puppeeter_service_tag: v0.0.13
+          firecrawl_tag: v0.0.55
+          
+          scrapingBeeApiKey: 
+          num_workers_per_queue: 8
+          proxy:
+            enabled: false
+            url: 
+            server: 
+            username: 
+            password: 
+          
           redis:
             enabled: false
+            commonConfiguration: |-
+              maxclients 20000
+            metrics:
+              enabled: true
+              serviceMonitor:
+                enabled: true
+            auth:
+              password: "firecrawl-redis-password"
+            master:
+              disableCommands: []
+              persistence:
+                enabled: false
+              pdb:
+                create: false
+              resources:
+                requests:
+                  memory: 10Gi
+                limits:
+                  memory: 10Gi
+            replica:
+              replicaCount: 0
 
   syncPolicy:
     automated:
-      prune: true
-      selfHeal: true
+      prune: false
+      selfHeal: false
       allowEmpty: true
+    syncOptions:
+      - ServerSideApply=true
     retry:
       limit: 10
       backoff:
