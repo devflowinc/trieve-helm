@@ -72,6 +72,11 @@ spec:
                 secretKeyRef:
                   name: "trieve-unified-secret"
                   key: "clickhousePassword"
+            - name: REDIS_URL
+              valueFrom:
+                secretKeyRef:
+                  name: "trieve-unified-secret"
+                  key: "redisUrl"
 
           config:
             asSecret: true
@@ -200,10 +205,14 @@ spec:
             serviceMonitor:
               enabled: false
           auth:
+            enabled: true
+            usePasswordFiles: false
+            existingSecret: trieve-unified-secret
+            existingSecretPasswordKey: "redisPassword"
             secretKeyRef:
               enabled: true
               secretName: "trieve-unified-secret"
-              secretKey: "redisPassword"
+              secretKey: "redisUrl"
           master:
             disableCommands: []
             persistence:
@@ -473,7 +482,7 @@ spec:
                 operator: "Exists"
                 effect: "NoSchedule"
 
-        firecrawl:
+        firecrawl-simple:
           enabled: true
           redisSecret:
             name: trieve-unified-secret
@@ -495,30 +504,11 @@ spec:
             commonConfiguration: |-
               maxclients 20000
             metrics:
-              enabled: true
+              enabled: false
               serviceMonitor:
-                enabled: true
-            auth:
-              password: "firecrawl-redis-password"
-            master:
-              disableCommands: []
-              persistence:
                 enabled: false
-              pdb:
-                create: false
-              resources:
-                requests:
-                  memory: 10Gi
-                limits:
-                  memory: 10Gi
-            replica:
-              replicaCount: 0
 
   syncPolicy:
-    automated:
-      prune: false
-      selfHeal: false
-      allowEmpty: true
     syncOptions:
       - ServerSideApply=true
     retry:
