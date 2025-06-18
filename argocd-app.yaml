@@ -9,9 +9,9 @@ spec:
     server: https://kubernetes.default.svc
     namespace: trieve
   source:
-    repoURL: https://github.com/devflowinc/trieve-helm.git
-    targetRevision: fix-argocd
-    path: charts/trieve
+    repoURL: https://devflowinc.github.io/trieve-helm
+    targetRevision: 0.2.32
+    chart: trieve
     helm:
       releaseName: trieve-local
       valuesObject:
