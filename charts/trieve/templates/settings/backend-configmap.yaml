@@ -72,7 +72,7 @@ data:
   USE_ANALYTICS: {{ "true" | quote }}
   BM25_ACTIVE: {{ .Values.config.trieve.bm25Active | quote }}
   SUBTRACE_TOKEN: {{ .Values.config.trieve.subtraceToken | quote }}
-  FIRECRAWL_URL: {{ .Values.config.trieve.firecrawlUrl | quote }}
+  FIRECRAWL_URL: "http://firecrawl-api:3002"
   DITTOFEED_API_KEY: {{ .Values.config.trieve.dittofeedApiKey | quote }}
   CREATE_QDRANT_COLLECTIONS: {{ .Values.config.qdrant.initCollections | quote }}
   CHAT_COMPLETION_TIMEOUT_SECS: {{ .Values.config.trieve.chatCompletionTimeoutSecs | quote }}

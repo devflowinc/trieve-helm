@@ -471,7 +471,7 @@ embeddings:
     args: []
 
 
-firecrawl:
+firecrawl-simple:
   puppeeter_service_tag: v0.0.13
   firecrawl_tag: v0.0.55
   
