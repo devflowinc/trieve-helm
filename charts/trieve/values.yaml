@@ -353,7 +353,7 @@ config:
     rerankerServerOrigin: http://embedding-reranker.default.svc.cluster.local
     salt: "tbbqfnygvfirellhzzl" # Should be a unique random string
     secretKey: "lkjadsf2349asdlfkj2334209ualkfsdlfkj1023u19312l3kj12l3kjsaf0d9u90823l1kj3209u34h" # Should be a unique random string
-    adminApiKey: "" # Example: "ad91lkjad190adfal"
+    adminApiKey: "adminApiKey" # Example: "ad91lkjad190adfal"
     adminApiKeyRef:
       enabled: false
       secretName: "my-admin-api-key-secret"

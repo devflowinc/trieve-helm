@@ -10,7 +10,7 @@ spec:
     namespace: trieve
   source:
     repoURL: https://devflowinc.github.io/trieve-helm
-    targetRevision: 0.2.32
+    targetRevision: 0.2.33
     chart: trieve
     helm:
       releaseName: trieve-local
@@ -187,7 +187,7 @@ spec:
             enabled: false
           metrics:
             serviceMonitor:
-              enabled: false
+              enabled: true
           podDisruptionBudget:
             enabled: false
             maxUnavailable: 1
@@ -423,7 +423,7 @@ spec:
             registry: ghcr.io/huggingface
             repository: text-embeddings-inference
             useGpu: true
-            serviceMonitor: false
+            serviceMonitor: true
             tolerations:
               - key: "gpu-node"
                 operator: "Exists"
@@ -437,7 +437,7 @@ spec:
             revision: main
             useGpu: true
             args: ["--pooling", "splade"]
-            serviceMonitor: false
+            serviceMonitor: true
             tolerations:
               - key: "gpu-node"
                 operator: "Exists"
@@ -450,7 +450,7 @@ spec:
             revision: main
             useGpu: true
             args: ["--pooling", "splade"]
-            serviceMonitor: false
+            serviceMonitor: true
             tolerations:
               - key: "gpu-node"
                 operator: "Exists"
@@ -463,7 +463,7 @@ spec:
             revision: main
             useGpu: true
             args: []
-            serviceMonitor: false
+            serviceMonitor: true
             tolerations:
               - key: "gpu-node"
                 operator: "Exists"
@@ -476,7 +476,7 @@ spec:
             revision: refs/pr/4
             useGpu: true
             args: []
-            serviceMonitor: false
+            serviceMonitor: true
             tolerations:
               - key: "gpu-node"
                 operator: "Exists"

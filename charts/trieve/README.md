@@ -36,15 +36,17 @@ Before proceeding, you need to modify these specific sections in your `values.ya
 1. **config.vite** - Domains that the frontends use URLs (apiHost, searchUiUrl, chatUiUrl, dashboardUrl)
 2. **config.trieve.baseServerUrl** - Domain that the server uses
 3. **config.trieve** security keys:
-   - `salt` - Generate with: `openssl rand -hex 16`
-   - `secretKey` - Generate with: `openssl rand -hex 32`
-   - `adminApiKey` - Generate with: `openssl rand -hex 24`
+   - `adminApiKey` - Generate with: `openssl rand -hex 24` (**config.trieve.adminApiKeyRef** to configure as a secret)
 4. **config.s3** - Your S3 bucket credentials (endpoint, accessKey, secretKey, bucket, region)
-5. **config.llm.apiKey** - Your OpenRouter API key
-6. **config.openai.apiKey** - Your OpenAI API key
+  - **config.s3.accessKeyRef** To configure as a secret using the `config.s3.accessKeyRef` option
+  - **config.s3.secretKey** To configure as a secret using the `config.s3.secretKeyRef` option
+5. **config.llm.apiKey** - Your OpenRouter API key (**config.llm.apiKeyRef** to configure as a secret)
+6. **config.openai.apiKey** - Your OpenAI API key (**config.openai.apiKeyRef** to configure as a secret)
 7. **config.oidc** - Your OIDC provider settings (clientSecret, clientId, issuerUrl, authRedirectUrl)
-8. **pdf2md.config.s3** - S3 credentials for PDF processing (if using PDF2MD)
+  - `config.oidc.clientSecretRef` can be used to configure as a secret
+8. **pdf2md.s3** - S3 credentials for PDF processing (if using PDF2MD (`pdf2md.enabled`)
 9. **pdf2md.config.llm.apiKey** - LLM API key for PDF processing (if using PDF2MD)
+  - `pdf2md.config.llm.apiKeyRef` can be used to configure as a secret
 
 **For production**: Also change database passwords for clickhouse, qdrant, and redis.
 
