@@ -26,7 +26,7 @@ dependencies:
     version: 0.0.9
     repository: https://devflowinc.github.io/trieve-helm
     condition: pdf2md.enabled
-  - name: firecrawl-simple
-    # repository: https://devflowinc.github.io/trieve-helm
-    version: 0.0.1
-    condition: firecrawl-simple.enabled
+  # - name: firecrawl-simple
+  #   # repository: https://devflowinc.github.io/trieve-helm
+  #   version: 0.0.1
+  #   condition: firecrawl-simple.enabled
