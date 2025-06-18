@@ -1,45 +1,19 @@
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: delete-worker
-  labels:
-    app.kubernetes.io/name: delete-worker
-    app.kubernetes.io/instance: {{ .Release.Name }}
-  annotations:
-    {{- if $.Values.config.trieve.asSecret }}
-    checksum/config: {{ include (print $.Template.BasePath "/settings/backend-secrets.yaml") . | sha256sum }}
-    {{- else }}
-    checksum/config: {{ include (print $.Template.BasePath "/settings/backend-configmap.yaml") . | sha256sum }}
-    {{- end }}
-spec:
-  replicas: {{ .Values.containers.delete_worker.replicas | default 0 }}
-  selector:
-    matchLabels:
-      app.kubernetes.io/name: delete-worker
-      app.kubernetes.io/instance: {{ .Release.Name }}
-  template:
-    metadata:
-      annotations:
-        {{- if $.Values.config.trieve.asSecret }}
-        checksum/config: {{ include (print $.Template.BasePath "/settings/backend-secrets.yaml") . | sha256sum }}
-        {{- else }}
-        checksum/config: {{ include (print $.Template.BasePath "/settings/backend-configmap.yaml") . | sha256sum }}
-        {{- end }}
-      labels:
-        app.kubernetes.io/name: delete-worker
-        app.kubernetes.io/instance: {{ .Release.Name }}
-    spec:
-      containers:
-      - name: delete-worker
-        image: {{ printf "%s:%s" "trieve/delete_worker" .Values.containers.delete_worker.tag }}
-        envFrom:
-          {{- if .Values.config.trieve.asSecret }}
-          - secretRef:
-              name: trieve-server-secret
-          {{- else }}
-          - configMapRef:
-              name: trieve-server-config
-          {{- end }}
-        env:
-          - name: DELETE_CHUNK_BATCH_SIZE
-            value: {{ .Values.config.delete_worker.batch_size | quote }}
+{{- include "trieve.worker.deployment" (dict 
+  "name" "delete-worker"
+  "replicas" ($.Values.containers.delete_worker.replicas | default 0)
+  "image" (dict 
+    "repository" $.Values.containers.delete_worker.repository
+    "tag" $.Values.containers.delete_worker.tag
+  )
+  "resources" $.Values.containers.delete_worker.resources
+  "Values" $.Values
+  "Release" $.Release
+  "Template" $.Template
+  "Chart" $.Chart
+  "env" (list
+    (dict
+      "name" "DELETE_CHUNK_BATCH_SIZE" 
+      "value" $.Values.config.delete_worker.batch_size)
+  )
+)
+-}}
