@@ -12,6 +12,20 @@ entries:
     urls:
     - https://github.com/devflowinc/trieve-helm/releases/download/embeddings-helm-0.1.0/embeddings-helm-0.1.0.tgz
     version: 0.1.0
+  firecrawl-simple:
+  - apiVersion: v2
+    created: "2025-06-18T16:41:21.640252898Z"
+    dependencies:
+    - condition: redis.enabled
+      name: redis
+      repository: https://charts.bitnami.com/bitnami
+      version: 21.0.2
+    description: FireCrawl
+    digest: 75b23052ce313efe69f73aa40479d04e50803647c19694c7e0a4a0f3ac0c50e7
+    name: firecrawl-simple
+    urls:
+    - https://github.com/devflowinc/trieve-helm/releases/download/firecrawl-simple-0.0.1/firecrawl-simple-0.0.1.tgz
+    version: 0.0.1
   generation-helm:
   - apiVersion: v2
     appVersion: 1.16.0
@@ -1202,4 +1216,4 @@ entries:
     urls:
     - https://github.com/devflowinc/trieve-helm/releases/download/trieve-helm-0.2.2/trieve-helm-0.2.2.tgz
     version: 0.2.2
-generated: "2025-06-16T01:31:26.392089817Z"
+generated: "2025-06-18T16:41:22.135534199Z"
