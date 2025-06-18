@@ -1,6 +1,9 @@
 puppeeter_service_tag: v0.0.13
 firecrawl_tag: v0.0.55
 
+# imagePullSecrets:
+#   - name: trieve-pull-secret
+
 redisUri: "redis://:firecrawl-redis-password@firecrawl-redis-master:6379"
 redisSecret: {}
   # name: firecrawl-redis-secret
