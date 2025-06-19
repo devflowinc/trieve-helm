@@ -19,6 +19,6 @@ dependencies:
   version: 0.0.9
 - name: firecrawl-simple
   repository: https://devflowinc.github.io/trieve-helm
-  version: 0.0.1
-digest: sha256:823bde7a16cbce32a2ca4ad6f096da8bed7214fad86a867f9bf437e0ef48ee2e
-generated: "2025-06-18T09:47:46.866165449-07:00"
+  version: 0.0.2
+digest: sha256:d5849485f93154fd78ba37141a15f28c14c2909118a43b129dd5d74e6b298fc5
+generated: "2025-06-18T22:47:02.551637575-07:00"
