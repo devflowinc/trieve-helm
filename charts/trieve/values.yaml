@@ -472,6 +472,8 @@ embeddings:
 
 
 firecrawl-simple:
+  enabled: false
+
   puppeeter_service_tag: v0.0.13
   firecrawl_tag: v0.0.55
   
