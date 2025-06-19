@@ -5,7 +5,7 @@ metadata:
   name: {{ .name }}
   labels:
     app.kubernetes.io/name: {{ .name }}
-    app.kubernetes.io/instance: {{ $.instance }}
+    app.kubernetes.io/instance: {{ $.Release.Name }}
 spec:
   replicas: {{ .replicas | default 1 }}
   selector:
