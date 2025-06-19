@@ -23,4 +23,4 @@ spec:
               args:
                 - /bin/sh
                 - -c
-                - curl http://api.firecrawl.svc.cluster.local:3002/admin/@/clean-before-24h-complete-jobs
+                - curl http://firecrawl-api:3002/admin/@/clean-before-24h-complete-jobs
