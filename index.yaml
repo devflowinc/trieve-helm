@@ -188,6 +188,45 @@ entries:
   trieve:
   - apiVersion: v2
     appVersion: 0.12.0
+    created: "2025-06-25T19:52:05.610532149Z"
+    dependencies:
+    - condition: qdrant.enabled
+      name: qdrant
+      repository: https://qdrant.github.io/qdrant-helm
+      version: 1.13.4
+    - condition: redis.enabled
+      name: redis
+      repository: https://charts.bitnami.com/bitnami
+      version: 20.10.0
+    - condition: keycloak.enabled
+      name: keycloak
+      repository: ""
+      version: 0.0.0
+    - condition: clickhouse.enabled
+      name: clickhouse
+      repository: ""
+      version: 0.0.0
+    - condition: postgres.enabled
+      name: postgres
+      repository: ""
+      version: 0.0.0
+    - condition: pdf2md.enabled
+      name: pdf2md
+      repository: https://devflowinc.github.io/trieve-helm
+      version: 0.0.9
+    - condition: firecrawl-simple.enabled
+      name: firecrawl-simple
+      repository: https://devflowinc.github.io/trieve-helm
+      version: 0.0.2
+    description: Helm chart expressing Trieve deployment without any dependencies
+    digest: 08ff09355f98d772d01158d6cefffe071964e1c12b5a8e76b8981746481e9408
+    name: trieve
+    type: application
+    urls:
+    - https://github.com/devflowinc/trieve-helm/releases/download/trieve-0.2.37/trieve-0.2.37.tgz
+    version: 0.2.37
+  - apiVersion: v2
+    appVersion: 0.12.0
     created: "2025-06-19T16:31:18.022270923Z"
     dependencies:
     - condition: qdrant.enabled
@@ -1463,4 +1502,4 @@ entries:
     urls:
     - https://github.com/devflowinc/trieve-helm/releases/download/trieve-helm-0.2.2/trieve-helm-0.2.2.tgz
     version: 0.2.2
-generated: "2025-06-19T16:31:18.022517965Z"
+generated: "2025-06-25T19:52:05.611024681Z"
