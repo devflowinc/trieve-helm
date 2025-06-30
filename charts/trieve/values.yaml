@@ -437,6 +437,9 @@ embeddings:
     repository: text-embeddings-inference
     useGpu: true
     args: []
+    # env:
+    #   - name: HF_TOKEN
+    #     value: "HUGGINGFACE_MODEL_TOKEN"
   - name: splade-doc
     model: naver/efficient-splade-VI-BT-large-doc
     tag: "89-1.4"

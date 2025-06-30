@@ -46,6 +46,12 @@ spec:
               path: "/"
               port: 80
           image: {{ printf "%s/%s:%s" $service.registry $service.repository $service.tag }}
+          {{- if $service.env }}
+          env:
+            {{- range $service.env }}
+            - {{ . | toYaml | nindent 14 }}
+            {{- end }}
+          {{- end }}
           args: 
             {{ (concat (list "--model-id" $service.model "--revision" $service.revision) $service.args) | toJson }}
           ports:
