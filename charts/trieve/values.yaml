@@ -219,72 +219,102 @@ containers:
     tag: sha-94175af
     repository: server
     resources: {}
+      # requests:
+      #   memory: 2Gi
   ingest:
     tag: sha-94175af
     repository: ingest
     replicas: 3
     resources: {}
+    #   requests:
+    #     memory: 2Gi
   update_worker:
     tag: sha-94175af
     repository: update-worker
     replicas: 1
     resources: {}
+    #   requests:
+    #     memory: 100Mi
   batch_etl_worker:
     tag: sha-94175af
     repository: etl-worker
     replicas: 1
     resources: {}
+    #   requests:
+    #     memory: 50Mi
   file_worker:
     tag: sha-94175af
     repository: file_worker
     replicas: 1
     resources: {}
+    #   requests:
+    #     memory: 200Mi
   delete_worker:
     tag: sha-94175af
     repository: delete_worker
     replicas: 1
     resources: {}
+    #   requests:
+    #     memory: 50Mi
   group_worker:
     tag: sha-94175af
     repository: group_worker
     replicas: 1
     resources: {}
+    #   requests:
+    #     memory: 50Mi
   sync_qdrant:
     tag: sha-94175af
     repository: sync_qdrant
     resources: {}
+    #   requests:
+    #     memory: 50Mi
   bktree_worker:
     tag: sha-94175af
     repository: bktree-worker
     replicas: 1
     resources: {}
+    #   requests:
+    #     memory: 50Mi
   word_worker:
     tag: sha-94175af
     repository: word-worker
     replicas: 1
     resources: {}
+    #   requests:
+    #     memory: 50Mi
   word_id_cronjob:
     tag: sha-94175af
     repository: word-id-cronjob
     replicas: 1
     resources: {}
+    #   requests:
+    #     memory: 50Mi
   crawl_worker:
     tag: sha-94175af
     repository: crawl-worker
     replicas: 1
     resources: {}
+    #   requests:
+    #     memory: 1Gi
   search:
     tag: sha-2b3b45a
     repository: search
     resources: {}
+    #   requests:
+    #     memory: 50Mi
   chat:
     tag: sha-2b3b45a
     repository: chat
     resources: {}
+    #   requests:
+    #     memory: 50Mi
   dashboard:
     tag: sha-2b3b45a
     repository: dashboard
     resources: {}
+    #   requests:
+    #     memory: 50Mi
   clickhouse_collapse:
     tag: latest
     repository: clickhouse-collapse-query-script
