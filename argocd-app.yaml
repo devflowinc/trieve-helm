@@ -19,6 +19,8 @@ spec:
           image:
             registry: trieve
             imagePullPolicy: Always
+            additionalLabels:
+              owner: gen-ai
             # Optional if using your own repository
             # the default is
             # imagePullSecrets:

@@ -16,9 +16,9 @@ dependencies:
   version: 0.0.0
 - name: pdf2md
   repository: https://devflowinc.github.io/trieve-helm
-  version: 0.0.9
+  version: 0.0.10
 - name: firecrawl-simple
   repository: https://devflowinc.github.io/trieve-helm
-  version: 0.0.2
-digest: sha256:d5849485f93154fd78ba37141a15f28c14c2909118a43b129dd5d74e6b298fc5
-generated: "2025-06-18T22:47:02.551637575-07:00"
+  version: 0.0.3
+digest: sha256:dce6e412450b68cf5b0c9605ddc0f0c509b3bc35b7c187be7d8d430ee88de512
+generated: "2025-07-07T11:51:22.547456075-07:00"
