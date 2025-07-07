@@ -1,5 +1,8 @@
 installCrds: true
 
+additionalLabels: {}
+  # owner: gen-ai
+
 clusterSpec:
   instances: 3
 

@@ -10,7 +10,7 @@ spec:
     namespace: trieve
   source:
     repoURL: https://devflowinc.github.io/trieve-helm
-    targetRevision: 0.2.43
+    targetRevision: 0.2.44
     chart: trieve
     helm:
       releaseName: trieve-local
@@ -29,6 +29,8 @@ spec:
         postgres:
           # Enables Postgres via the subchart
           enabled: true
+          additionalLabels:
+            owner: gen-ai
           # Installs cloudnative-pg operator
           installCrds: true
           # Pulls from secret if postgres.enabled = true
@@ -145,6 +147,9 @@ spec:
             templates:
               podTemplates:
                 - name: clickhouse-pod-template
+                  metadata:
+                    labels:
+                      owner: gen-ai
                   spec:
                     containers:
                       - name: clickhouse

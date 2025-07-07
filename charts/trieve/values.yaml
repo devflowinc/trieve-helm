@@ -1,7 +1,7 @@
 global:
   additionalLabels:
     # Add additional labels to the deployment
-    # owner: gen-ai
+    owner: gen-ai
 
   additionalAnnotations:
     # Add additional annotations to the deployment
@@ -19,6 +19,8 @@ postgres:
   enabled: true
   # Installs cloudnative-pg operator
   installCrds: true
+  # Override additionalLabels to prevent merge conflict with remote chart
+  additionalLabels: {}
   # Pulls from secret if postgres.enabled = true
   # dbURI: "postgres://postgres:password@postgres.default.svc.cluster.local:5432/trieve"
   # This requires installing cloud-native-pg operator https://cloudnative-pg.io/documentation/1.24/installation_upgrade/
