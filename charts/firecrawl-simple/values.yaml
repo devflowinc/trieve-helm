@@ -1,3 +1,9 @@
+global:
+  additionalAnnotations: 
+    # "helm.sh/hook": post-install
+  additionalLabels: 
+    # helm.sh/chart: firecrawl
+
 puppeeter_service_tag: v0.0.13
 firecrawl_tag: v0.0.55
 

@@ -1,3 +1,15 @@
+global:
+  imagePullSecrets:
+    - name: regcred
+
+  additionalAnnotations:
+    # Add additional annotations to the deployment
+    # key: value
+
+  additionalLabels:
+    # Add additional labels to the deployment
+    # key: value
+
 redis:
   enabled: true
   # connection: redis://:password@localhost:6379/0
