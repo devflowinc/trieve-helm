@@ -6,11 +6,17 @@ metadata:
   labels:
     app.kubernetes.io/name: {{ .name }}
     app.kubernetes.io/instance: {{ $.Release.Name }}
+    {{- with $.Values.global.additionalLabels }}
+    {{- toYaml . | nindent 4 }}
+    {{- end }}
   annotations:
     {{- if $.Values.config.asSecret }}
     checksum/config: {{ include (print $.Template.BasePath "/secret.yaml") $ | sha256sum }}
     {{- else }}
     checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") $ | sha256sum }}
+    {{- end }}
+    {{- with $.Values.global.additionalAnnotations }}
+    {{- toYaml . | nindent 4 }}
     {{- end }}
 spec:
   selector:
