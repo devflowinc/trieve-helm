@@ -30,7 +30,13 @@ spec:
         {{- else }}
         checksum/config: {{ include (print $.Template.BasePath "/settings/backend-configmap.yaml") . | sha256sum }}
         {{- end }}
+        {{- with .Values.global.additionalAnnotations }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
       labels:
+        {{- with .Values.global.additionalLabels }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
         app.kubernetes.io/name: server
         app.kubernetes.io/instance: {{ .Release.Name }}
     spec:

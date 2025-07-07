@@ -20,9 +20,15 @@ spec:
         {{- else }}
         checksum/config: {{ include (print $.Template.BasePath "/settings/backend-configmap.yaml") . | sha256sum }}
         {{- end }}
+        {{- with .Values.global.additionalAnnotations }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
       labels:
         app.kubernetes.io/name: {{ .name }}
         app.kubernetes.io/instance: {{ $.Release.Name }}
+        {{- with .Values.global.additionalLabels }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
     spec:
       {{- if $.Values.global.imagePullSecrets }}
       imagePullSecrets:

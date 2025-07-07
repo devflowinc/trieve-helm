@@ -1,3 +1,12 @@
+global:
+  additionalLabels:
+    # Add additional labels to the deployment
+    # key: value
+
+  additionalAnnotations:
+    # Add additional annotations to the deployment
+    # key: value
+
 installCrds: true
 
 clusterSpec:

@@ -25,6 +25,13 @@ spec:
     metadata:
       labels:
         app: keycloak-postgres
+        {{- with .Values.global.additionalLabels }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
+      annotations:
+        {{- with .Values.global.additionalAnnotations }}
+          {{- toYaml . | nindent 8 }}
+        {{- end }}
     spec:
       containers:
         - name: keycloak-postgres
