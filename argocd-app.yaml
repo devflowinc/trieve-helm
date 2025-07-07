@@ -10,7 +10,7 @@ spec:
     namespace: trieve
   source:
     repoURL: https://devflowinc.github.io/trieve-helm
-    targetRevision: 0.2.44
+    targetRevision: 0.2.45
     chart: trieve
     helm:
       releaseName: trieve-local
