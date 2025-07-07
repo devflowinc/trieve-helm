@@ -15,7 +15,7 @@ spec:
             {{- with .Values.global.additionalLabels }}
             {{- toYaml . | nindent 12 }}
             {{- end }}
-          metadata:
+          annotations:
             {{- with .Values.global.additionalAnnotations }}
             {{- toYaml . | nindent 12 }}
             {{- end }}

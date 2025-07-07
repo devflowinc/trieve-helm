@@ -10,7 +10,7 @@ spec:
     namespace: trieve
   source:
     repoURL: https://devflowinc.github.io/trieve-helm
-    targetRevision: 0.2.33
+    targetRevision: 0.2.42
     chart: trieve
     helm:
       releaseName: trieve-local
@@ -19,8 +19,8 @@ spec:
           image:
             registry: trieve
             imagePullPolicy: Always
-            additionalLabels:
-              owner: gen-ai
+          additionalLabels:
+            owner: gen-ai
             # Optional if using your own repository
             # the default is
             # imagePullSecrets:
