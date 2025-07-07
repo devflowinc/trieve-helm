@@ -5,6 +5,13 @@ metadata:
   labels:
     app.kubernetes.io/name: {{ $.Release.Name }}-trieve
     app.kubernetes.io/instance: {{ .Release.Name }}
+    {{- with .Values.global.additionalLabels }}
+    {{- toYaml . | nindent 4 }}
+    {{- end }}
+  annotations:
+    {{- with .Values.global.additionalAnnotations }}
+      {{- toYaml . | nindent 4 }}
+    {{- end }}
 spec: 
 {{ toYaml .Values.clickhouseSpec | indent 2 }}
 

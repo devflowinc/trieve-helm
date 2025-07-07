@@ -7,8 +7,15 @@ kind: CronJob
 metadata:
   name: clone-qdrant-{{ $service.clone_name }}
   labels:
+    {{- with .Values.global.additionalLabels }}
+    {{- toYaml . | nindent 4 }}
+    {{- end }}
     app.kubernetes.io/name: clone-qdrant-{{ $service.clone_name }}
     app.kubernetes.io/instance: {{ .Release.Name }}
+  annotations:
+    {{- with .Values.global.additionalAnnotations }}
+    {{- toYaml . | nindent 4 }}
+    {{- end }}
 spec:
   suspend: true
   schedule: "0 0 * * *"

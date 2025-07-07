@@ -19,6 +19,15 @@ spec:
   jobTemplate:
     spec:
       template:
+        metadata:
+          labels:
+            {{- with .Values.global.additionalLabels }}
+            {{- toYaml . | nindent 12 }}
+            {{- end }}
+          metadata:
+            {{- with .Values.global.additionalAnnotations }}
+            {{- toYaml . | nindent 12 }}
+            {{- end }}
         spec:
           restartPolicy: OnFailure
           {{- if $.Values.global.imagePullSecrets }}

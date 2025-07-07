@@ -13,11 +13,17 @@ spec:
       app.kubernetes.io/instance: {{ .Release.Name }}
   template:
     metadata:
-      annotations:
-        checksum/config: {{ include (print $.Template.BasePath "/settings/frontend-configmap.yaml") . | sha256sum }}
       labels:
+        {{- with .Values.global.additionalLabels }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
         app.kubernetes.io/name: dashboard
         app.kubernetes.io/instance: {{ .Release.Name }}
+      annotations:
+        checksum/config: {{ include (print $.Template.BasePath "/settings/frontend-configmap.yaml") . | sha256sum }}
+        {{- with .Values.global.additionalAnnotations }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
     spec:
       {{- if $.Values.global.imagePullSecrets }}
       imagePullSecrets:

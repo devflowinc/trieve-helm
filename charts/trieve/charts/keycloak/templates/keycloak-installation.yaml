@@ -2,6 +2,14 @@ apiVersion: k8s.keycloak.org/v2alpha1
 kind: Keycloak
 metadata:
   name: trieve-keycloak
+  labels:
+    {{- with .Values.global.additionalLabels }}
+    {{- toYaml . | nindent 4 }}
+    {{- end }}
+  annotations:
+    {{- with .Values.global.additionalAnnotations }}
+      {{- toYaml . | nindent 4 }}
+    {{- end }}
 spec:
   instances: 1
   bootstrapAdmin:

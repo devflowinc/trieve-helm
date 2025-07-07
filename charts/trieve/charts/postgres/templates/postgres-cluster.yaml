@@ -5,5 +5,8 @@ metadata:
   labels:
     app.kubernetes.io/name: {{ $.Release.Name }}-trieve-postgres
     app.kubernetes.io/instance: {{ .Release.Name }}
+    {{- with .Values.global.additionalLabels }}
+    {{- toYaml . | nindent 4 }}
+    {{- end }}
 spec:
 {{ toYaml $.Values.clusterSpec | nindent 2 }}

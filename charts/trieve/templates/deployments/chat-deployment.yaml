@@ -14,10 +14,16 @@ spec:
   template:
     metadata:
       labels:
+        {{- with .Values.global.additionalLabels }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
         app.kubernetes.io/name: chat
         app.kubernetes.io/instance: {{ .Release.Name }}
       annotations:
         checksum/config: {{ include (print $.Template.BasePath "/settings/frontend-configmap.yaml") . | sha256sum }}
+        {{- with .Values.global.additionalAnnotations }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
     spec:
       {{- if $.Values.global.imagePullSecrets }}
       imagePullSecrets:
