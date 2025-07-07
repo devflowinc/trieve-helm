@@ -1,7 +1,7 @@
 global:
   additionalLabels:
     # Add additional labels to the deployment
-    # key: value
+    # owner: gen-ai
 
   additionalAnnotations:
     # Add additional annotations to the deployment

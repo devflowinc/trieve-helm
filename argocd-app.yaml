@@ -10,7 +10,7 @@ spec:
     namespace: trieve
   source:
     repoURL: https://devflowinc.github.io/trieve-helm
-    targetRevision: 0.2.42
+    targetRevision: 0.2.43
     chart: trieve
     helm:
       releaseName: trieve-local
@@ -189,12 +189,16 @@ spec:
             enabled: false
           metrics:
             serviceMonitor:
-              enabled: true
+              enabled: false
           podDisruptionBudget:
             enabled: false
             maxUnavailable: 1
           persistence:
             size: "10Gi"
+
+          podLabels: 
+            owner: gen-ai
+
           resources:
             requests:
               cpu: 7
@@ -217,6 +221,8 @@ spec:
               secretKey: "redisUrl"
           master:
             disableCommands: []
+            podLabels:
+              owner: gen-ai
             persistence:
               enabled: false
             pdb:
@@ -425,7 +431,7 @@ spec:
             registry: ghcr.io/huggingface
             repository: text-embeddings-inference
             useGpu: true
-            serviceMonitor: true
+            serviceMonitor: false
             tolerations:
               - key: "gpu-node"
                 operator: "Exists"
@@ -439,7 +445,7 @@ spec:
             revision: main
             useGpu: true
             args: ["--pooling", "splade"]
-            serviceMonitor: true
+            serviceMonitor: false
             tolerations:
               - key: "gpu-node"
                 operator: "Exists"
@@ -452,7 +458,7 @@ spec:
             revision: main
             useGpu: true
             args: ["--pooling", "splade"]
-            serviceMonitor: true
+            serviceMonitor: false
             tolerations:
               - key: "gpu-node"
                 operator: "Exists"
@@ -465,7 +471,7 @@ spec:
             revision: main
             useGpu: true
             args: []
-            serviceMonitor: true
+            serviceMonitor: false
             tolerations:
               - key: "gpu-node"
                 operator: "Exists"
@@ -478,7 +484,7 @@ spec:
             revision: refs/pr/4
             useGpu: true
             args: []
-            serviceMonitor: true
+            serviceMonitor: false
             tolerations:
               - key: "gpu-node"
                 operator: "Exists"
