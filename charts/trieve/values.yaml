@@ -225,83 +225,90 @@ redis:
 
 containers:
   server:
-    tag: sha-35b84aa
+    tag: sha-414a3ca
     repository: server
     resources: {}
       # requests:
       #   memory: 2Gi
   ingest:
-    tag: sha-35b84aa
+    tag: sha-414a3ca
     repository: ingest
     replicas: 3
     resources: {}
     #   requests:
     #     memory: 2Gi
   update_worker:
-    tag: sha-35b84aa
+    tag: sha-414a3ca
     repository: update-worker
     replicas: 1
     resources: {}
     #   requests:
     #     memory: 100Mi
   batch_etl_worker:
-    tag: sha-35b84aa
+    tag: sha-414a3ca
     repository: etl-worker
     replicas: 1
     resources: {}
     #   requests:
     #     memory: 50Mi
   file_worker:
-    tag: sha-35b84aa
+    tag: sha-414a3ca
     repository: file_worker
     replicas: 1
     resources: {}
     #   requests:
     #     memory: 200Mi
   delete_worker:
-    tag: sha-35b84aa
+    tag: sha-414a3ca
     repository: delete_worker
     replicas: 1
     resources: {}
     #   requests:
     #     memory: 50Mi
   group_worker:
-    tag: sha-35b84aa
+    tag: sha-414a3ca
     repository: group_worker
     replicas: 1
     resources: {}
     #   requests:
     #     memory: 50Mi
   sync_qdrant:
-    tag: sha-35b84aa
+    tag: sha-414a3ca
     repository: sync_qdrant
     resources: {}
     #   requests:
     #     memory: 50Mi
   bktree_worker:
-    tag: sha-35b84aa
+    tag: sha-414a3ca
     repository: bktree-worker
     replicas: 1
     resources: {}
     #   requests:
     #     memory: 50Mi
   word_worker:
-    tag: sha-35b84aa
+    tag: sha-414a3ca
     repository: word-worker
     replicas: 1
     resources: {}
     #   requests:
     #     memory: 50Mi
   word_id_cronjob:
-    tag: sha-35b84aa
+    tag: sha-414a3ca
     repository: word-id-cronjob
     replicas: 1
     resources: {}
     #   requests:
     #     memory: 50Mi
   crawl_worker:
-    tag: sha-35b84aa
+    tag: sha-414a3ca
     repository: crawl-worker
+    replicas: 1
+    resources: {}
+    #   requests:
+    #     memory: 1Gi
+  csv_jsonl_worker:
+    tag: sha-414a3ca
+    repository: csv-jsonl-worker
     replicas: 1
     resources: {}
     #   requests:
