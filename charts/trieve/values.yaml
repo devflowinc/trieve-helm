@@ -225,82 +225,82 @@ redis:
 
 containers:
   server:
-    tag: sha-414a3ca
+    tag: sha-5ea1808
     repository: server
     resources: {}
       # requests:
       #   memory: 2Gi
   ingest:
-    tag: sha-414a3ca
+    tag: sha-5ea1808
     repository: ingest
     replicas: 3
     resources: {}
     #   requests:
     #     memory: 2Gi
   update_worker:
-    tag: sha-414a3ca
+    tag: sha-5ea1808
     repository: update-worker
     replicas: 1
     resources: {}
     #   requests:
     #     memory: 100Mi
   batch_etl_worker:
-    tag: sha-414a3ca
+    tag: sha-5ea1808
     repository: etl-worker
     replicas: 1
     resources: {}
     #   requests:
     #     memory: 50Mi
   file_worker:
-    tag: sha-414a3ca
+    tag: sha-5ea1808
     repository: file_worker
     replicas: 1
     resources: {}
     #   requests:
     #     memory: 200Mi
   delete_worker:
-    tag: sha-414a3ca
+    tag: sha-5ea1808
     repository: delete_worker
     replicas: 1
     resources: {}
     #   requests:
     #     memory: 50Mi
   group_worker:
-    tag: sha-414a3ca
+    tag: sha-5ea1808
     repository: group_worker
     replicas: 1
     resources: {}
     #   requests:
     #     memory: 50Mi
   sync_qdrant:
-    tag: sha-414a3ca
+    tag: sha-5ea1808
     repository: sync_qdrant
     resources: {}
     #   requests:
     #     memory: 50Mi
   bktree_worker:
-    tag: sha-414a3ca
+    tag: sha-5ea1808
     repository: bktree-worker
     replicas: 1
     resources: {}
     #   requests:
     #     memory: 50Mi
   word_worker:
-    tag: sha-414a3ca
+    tag: sha-5ea1808
     repository: word-worker
     replicas: 1
     resources: {}
     #   requests:
     #     memory: 50Mi
   word_id_cronjob:
-    tag: sha-414a3ca
+    tag: sha-5ea1808
     repository: word-id-cronjob
     replicas: 1
     resources: {}
     #   requests:
     #     memory: 50Mi
   crawl_worker:
-    tag: sha-414a3ca
+    tag: sha-5ea1808
     repository: crawl-worker
     replicas: 1
     resources: {}
