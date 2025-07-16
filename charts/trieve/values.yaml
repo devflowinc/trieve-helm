@@ -184,6 +184,9 @@ qdrant:
   enabled: true
   url: http://trieve-local-qdrant:6334
   apiKey: "qdrant-api-key" # This could also be made ref-able if needed
+  # trieveSecretOverride:
+  #   name: "custom-qdrant-secret"
+  #   key: "qdrant-api-key"
   replicaCount: 1
   livenessProbe:
     enabled: false
@@ -198,6 +201,12 @@ qdrant:
   requests:
     cpu: 1
     memory: 5Gi
+  # env:
+  #   - name: QDRANT__SERVICE__API_KEY
+  #     valueFrom:
+  #       secretKeyRef:
+  #         name: "custom-qdrant-secret"
+  #         key: "qdrant-api-key"
 
 redis:
   enabled: true
@@ -225,89 +234,89 @@ redis:
 
 containers:
   server:
-    tag: sha-5ea1808
+    tag: sha-2c284cc
     repository: server
     resources: {}
       # requests:
       #   memory: 2Gi
   ingest:
-    tag: sha-5ea1808
+    tag: sha-2c284cc
     repository: ingest
     replicas: 3
     resources: {}
     #   requests:
     #     memory: 2Gi
   update_worker:
-    tag: sha-5ea1808
+    tag: sha-2c284cc
     repository: update-worker
     replicas: 1
     resources: {}
     #   requests:
     #     memory: 100Mi
   batch_etl_worker:
-    tag: sha-5ea1808
+    tag: sha-2c284cc
     repository: etl-worker
     replicas: 1
     resources: {}
     #   requests:
     #     memory: 50Mi
   file_worker:
-    tag: sha-5ea1808
+    tag: sha-2c284cc
     repository: file_worker
     replicas: 1
     resources: {}
     #   requests:
     #     memory: 200Mi
   delete_worker:
-    tag: sha-5ea1808
+    tag: sha-2c284cc
     repository: delete_worker
     replicas: 1
     resources: {}
     #   requests:
     #     memory: 50Mi
   group_worker:
-    tag: sha-5ea1808
+    tag: sha-2c284cc
     repository: group_worker
     replicas: 1
     resources: {}
     #   requests:
     #     memory: 50Mi
   sync_qdrant:
-    tag: sha-5ea1808
+    tag: sha-2c284cc
     repository: sync_qdrant
     resources: {}
     #   requests:
     #     memory: 50Mi
   bktree_worker:
-    tag: sha-5ea1808
+    tag: sha-2c284cc
     repository: bktree-worker
     replicas: 1
     resources: {}
     #   requests:
     #     memory: 50Mi
   word_worker:
-    tag: sha-5ea1808
+    tag: sha-2c284cc
     repository: word-worker
     replicas: 1
     resources: {}
     #   requests:
     #     memory: 50Mi
   word_id_cronjob:
-    tag: sha-5ea1808
+    tag: sha-2c284cc
     repository: word-id-cronjob
     replicas: 1
     resources: {}
     #   requests:
     #     memory: 50Mi
   crawl_worker:
-    tag: sha-5ea1808
+    tag: sha-2c284cc
     repository: crawl-worker
     replicas: 1
     resources: {}
     #   requests:
     #     memory: 1Gi
   csv_jsonl_worker:
-    tag: sha-414a3ca
+    tag: sha-2c284cc
     repository: csv-jsonl-worker
     replicas: 1
     resources: {}

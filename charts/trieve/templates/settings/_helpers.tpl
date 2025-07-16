@@ -169,6 +169,11 @@ redis://:{{ $redisPassword }}@{{ $svcName }}:6379
 - name: QDRANT_API_KEY
   valueFrom:
     secretKeyRef:
+{{- if and .Values.qdrant.trieveSecretOverride .Values.qdrant.trieveSecretOverride.name }}
+      name: {{ .Values.qdrant.trieveSecretOverride.name }}
+      key: {{ .Values.qdrant.trieveSecretOverride.key }}
+{{- else }}
       name: {{ .Release.Name }}-qdrant-apikey
       key: api-key
+{{- end }}
 {{- end -}}

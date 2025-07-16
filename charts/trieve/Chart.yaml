@@ -23,7 +23,7 @@ dependencies:
     version: 0.0.0
     condition: postgres.enabled
   - name: pdf2md
-    version: 0.0.10
+    version: 0.0.11
     repository: https://devflowinc.github.io/trieve-helm
     condition: pdf2md.enabled
   - name: firecrawl-simple
