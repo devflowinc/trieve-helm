@@ -108,6 +108,10 @@ config:
   chunkr:
     baseUrl: https://api.chunkr.ai
     apiKey: lu_*********************************************
+    apiKeyRef:
+      enabled: false
+      secretName: "my-pdf2md-chunkr-secret"
+      secretKey: "apiKey"
 
   pdf2md:
     # PDF2MD has a single ADMIN API apiKey
