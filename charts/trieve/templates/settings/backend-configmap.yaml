@@ -44,6 +44,7 @@ data:
   {{- end }}
   {{- if .Values.config.s3.region }}
   AWS_REGION: {{ .Values.config.s3.region | quote }}
+  AWS_REGION_CSVJSONL: {{ .Values.config.s3.region | quote }}
   {{- end }}
   COOKIE_SECURE: {{ .Values.config.trieve.cookieSecure | quote }}
   TIKA_URL: http://tika:9998
